@@ -1,11 +1,11 @@
 using FluentValidation;
 using MediatR;
+using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Domain.Entities;
 using TravelAndTours.Domain.Interfaces;
 
 namespace TravelAndTours.Application.Products.Commands.CreateProduct;
-
-public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
+public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ApiResponse<int>>
 {
     private readonly IUnitOfWork _uow;
 
@@ -14,10 +14,15 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
         _uow = uow;
     }
 
-    public async Task<int> Handle(CreateProductCommand request, CancellationToken ct)
+    public async Task<ApiResponse<int>> Handle(
+        CreateProductCommand request,
+        CancellationToken ct)
     {
         if (await _uow.Products.ExistsByNameAsync(request.Name, ct))
-            throw new ValidationException($"Product with name '{request.Name}' already exists.");
+        {
+            return ApiResponse<int>.Fail(
+                $"Product with name '{request.Name}' already exists.");
+        }
 
         var entity = new Product
         {
@@ -29,6 +34,9 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
         await _uow.Products.AddAsync(entity, ct);
         await _uow.SaveChangesAsync(ct);
 
-        return entity.Id;
+        return ApiResponse<int>.Ok(
+            entity.Id,
+            "Product created successfully");
     }
+
 }
