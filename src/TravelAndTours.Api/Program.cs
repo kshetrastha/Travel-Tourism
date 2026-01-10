@@ -9,6 +9,7 @@ using TravelAndTours.Application.Abstractions.Authentication;
 using TravelAndTours.Infrastructure;
 using TravelAndTours.Infrastructure.Authentication;
 using TravelAndTours.Infrastructure.Identity;
+using TravelAndTours.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,14 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TravelAndTours API", Version = "v1" });
+    c.SwaggerDoc("public", new OpenApiInfo { Title = "TravelAndTours Public API", Version = "v1" });
+    c.SwaggerDoc("admin", new OpenApiInfo { Title = "TravelAndTours Admin API", Version = "v1" });
+
+    c.DocInclusionPredicate((docName, desc) =>
+    {
+        var groupName = desc.GroupName ?? "public";
+        return string.Equals(groupName, docName, StringComparison.OrdinalIgnoreCase);
+    });
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -81,7 +89,11 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/public/swagger.json", "Public API");
+        options.SwaggerEndpoint("/swagger/admin/swagger.json", "Admin API");
+    });
 }
 
 app.UseHttpsRedirection();
@@ -94,5 +106,6 @@ app.MapControllers();
 
 // Seed roles + default admin (and run migrations)
 await IdentitySeeder.SeedAsync(app.Services, CancellationToken.None);
+await ExpeditionSeeder.SeedAsync(app.Services, CancellationToken.None);
 
 app.Run();

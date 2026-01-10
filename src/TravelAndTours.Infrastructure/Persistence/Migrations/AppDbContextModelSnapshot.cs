@@ -1,0 +1,903 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using TravelAndTours.Infrastructure.Persistence;
+
+#nullable disable
+
+namespace TravelAndTours.Infrastructure.Persistence.Migrations;
+
+[DbContext(typeof(AppDbContext))]
+public partial class AppDbContextModelSnapshot : ModelSnapshot
+{
+    protected override void BuildModel(ModelBuilder modelBuilder)
+    {
+#pragma warning disable 612, 618
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.7")
+            .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("ConcurrencyStamp")
+                .HasColumnType("text");
+
+            b.Property<string>("Name")
+                .HasColumnType("text");
+
+            b.Property<string>("NormalizedName")
+                .HasColumnType("text");
+
+            b.HasKey("Id");
+
+            b.HasIndex("NormalizedName")
+                .IsUnique()
+                .HasDatabaseName("RoleNameIndex");
+
+            b.ToTable("AspNetRoles", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("ClaimType")
+                .HasColumnType("text");
+
+            b.Property<string>("ClaimValue")
+                .HasColumnType("text");
+
+            b.Property<int>("RoleId")
+                .HasColumnType("integer");
+
+            b.HasKey("Id");
+
+            b.HasIndex("RoleId");
+
+            b.ToTable("AspNetRoleClaims", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser<int>", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<int>("AccessFailedCount")
+                .HasColumnType("integer");
+
+            b.Property<string>("ConcurrencyStamp")
+                .HasColumnType("text");
+
+            b.Property<string>("Email")
+                .HasColumnType("text");
+
+            b.Property<bool>("EmailConfirmed")
+                .HasColumnType("boolean");
+
+            b.Property<bool>("LockoutEnabled")
+                .HasColumnType("boolean");
+
+            b.Property<DateTimeOffset?>("LockoutEnd")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("NormalizedEmail")
+                .HasColumnType("text");
+
+            b.Property<string>("NormalizedUserName")
+                .HasColumnType("text");
+
+            b.Property<string>("PasswordHash")
+                .HasColumnType("text");
+
+            b.Property<string>("PhoneNumber")
+                .HasColumnType("text");
+
+            b.Property<bool>("PhoneNumberConfirmed")
+                .HasColumnType("boolean");
+
+            b.Property<string>("SecurityStamp")
+                .HasColumnType("text");
+
+            b.Property<bool>("TwoFactorEnabled")
+                .HasColumnType("boolean");
+
+            b.Property<string>("UserName")
+                .HasColumnType("text");
+
+            b.HasKey("Id");
+
+            b.HasIndex("NormalizedEmail")
+                .HasDatabaseName("EmailIndex");
+
+            b.HasIndex("NormalizedUserName")
+                .IsUnique()
+                .HasDatabaseName("UserNameIndex");
+
+            b.ToTable("AspNetUsers", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("ClaimType")
+                .HasColumnType("text");
+
+            b.Property<string>("ClaimValue")
+                .HasColumnType("text");
+
+            b.Property<int>("UserId")
+                .HasColumnType("integer");
+
+            b.HasKey("Id");
+
+            b.HasIndex("UserId");
+
+            b.ToTable("AspNetUserClaims", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+        {
+            b.Property<string>("LoginProvider")
+                .HasColumnType("text");
+
+            b.Property<string>("ProviderKey")
+                .HasColumnType("text");
+
+            b.Property<string>("ProviderDisplayName")
+                .HasColumnType("text");
+
+            b.Property<int>("UserId")
+                .HasColumnType("integer");
+
+            b.HasKey("LoginProvider", "ProviderKey");
+
+            b.HasIndex("UserId");
+
+            b.ToTable("AspNetUserLogins", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+        {
+            b.Property<int>("UserId")
+                .HasColumnType("integer");
+
+            b.Property<int>("RoleId")
+                .HasColumnType("integer");
+
+            b.HasKey("UserId", "RoleId");
+
+            b.HasIndex("RoleId");
+
+            b.ToTable("AspNetUserRoles", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+        {
+            b.Property<int>("UserId")
+                .HasColumnType("integer");
+
+            b.Property<string>("LoginProvider")
+                .HasColumnType("text");
+
+            b.Property<string>("Name")
+                .HasColumnType("text");
+
+            b.Property<string>("Value")
+                .HasColumnType("text");
+
+            b.HasKey("UserId", "LoginProvider", "Name");
+
+            b.ToTable("AspNetUserTokens", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionCategory", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<bool>("IsActive")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("boolean")
+                .HasDefaultValue(true);
+
+            b.Property<string>("Name")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<int?>("ParentCategoryId")
+                .HasColumnType("integer");
+
+            b.Property<string>("Slug")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<int>("SortOrder")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasDefaultValue(0);
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ParentCategoryId");
+
+            b.HasIndex("Slug")
+                .IsUnique();
+
+            b.ToTable("ExpeditionCategories", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Expedition", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("BestSeason")
+                .IsRequired()
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<int>("CategoryId")
+                .HasColumnType("integer");
+
+            b.Property<string>("Country")
+                .IsRequired()
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<string>("Difficulty")
+                .IsRequired()
+                .HasMaxLength(30)
+                .HasColumnType("character varying(30)");
+
+            b.Property<int>("DurationDays")
+                .HasColumnType("integer");
+
+            b.Property<string>("EndingPoint")
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<string>("ExcludesMarkdown")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<int?>("GroupSizeMax")
+                .HasColumnType("integer");
+
+            b.Property<int?>("GroupSizeMin")
+                .HasColumnType("integer");
+
+            b.Property<string>("IncludesMarkdown")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<int>("MaxAltitudeMeters")
+                .HasColumnType("integer");
+
+            b.Property<string>("OverviewMarkdown")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<DateTime?>("PublishedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("Region")
+                .IsRequired()
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<string>("ShortTitle")
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<string>("Slug")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<string>("StartingPoint")
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<string>("Status")
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasColumnType("character varying(20)")
+                .HasDefaultValue("Draft");
+
+            b.Property<string>("Tagline")
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<string>("Title")
+                .IsRequired()
+                .HasMaxLength(250)
+                .HasColumnType("character varying(250)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.HasIndex("CategoryId");
+
+            b.HasIndex("Slug")
+                .IsUnique();
+
+            b.ToTable("Expeditions", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionFact", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<string>("Label")
+                .IsRequired()
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<int>("SortOrder")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasDefaultValue(0);
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("Value")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("ExpeditionFacts", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionVariant", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<string>("ExclusionsOverrideMarkdown")
+                .HasColumnType("text");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<string>("InclusionsOverrideMarkdown")
+                .HasColumnType("text");
+
+            b.Property<bool>("IsActive")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("boolean")
+                .HasDefaultValue(true);
+
+            b.Property<decimal>("PriceFrom")
+                .HasColumnType("numeric(18,2)");
+
+            b.Property<string>("TitleOverride")
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("VariantType")
+                .IsRequired()
+                .HasMaxLength(30)
+                .HasColumnType("character varying(30)");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("ExpeditionVariants", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.FaqItem", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("AnswerMarkdown")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<bool>("IsActive")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("boolean")
+                .HasDefaultValue(true);
+
+            b.Property<string>("Question")
+                .IsRequired()
+                .HasMaxLength(300)
+                .HasColumnType("character varying(300)");
+
+            b.Property<int>("SortOrder")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasDefaultValue(0);
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("FaqItems", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.FixedDeparture", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<string>("Currency")
+                .IsRequired()
+                .HasMaxLength(3)
+                .HasColumnType("character varying(3)");
+
+            b.Property<DateTime>("EndDate")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<string>("Notes")
+                .HasMaxLength(500)
+                .HasColumnType("character varying(500)");
+
+            b.Property<decimal>("Price")
+                .HasColumnType("numeric(18,2)");
+
+            b.Property<int>("SlotsAvailable")
+                .HasColumnType("integer");
+
+            b.Property<int>("SlotsTotal")
+                .HasColumnType("integer");
+
+            b.Property<DateTime>("StartDate")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("Status")
+                .IsRequired()
+                .HasMaxLength(30)
+                .HasColumnType("character varying(30)")
+                .HasDefaultValue("Open");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<int?>("VariantId")
+                .HasColumnType("integer");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.HasIndex("VariantId");
+
+            b.ToTable("FixedDepartures", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ItineraryDay", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("Accommodation")
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<int>("DayNumber")
+                .HasColumnType("integer");
+
+            b.Property<string>("DescriptionMarkdown")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<int?>("ElevationMeters")
+                .HasColumnType("integer");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<string>("Meals")
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<string>("Title")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("ItineraryDays", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.MediaAsset", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<string>("MediaType")
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasColumnType("character varying(20)");
+
+            b.Property<int>("SortOrder")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasDefaultValue(0);
+
+            b.Property<string>("ThumbnailUrl")
+                .HasMaxLength(500)
+                .HasColumnType("character varying(500)");
+
+            b.Property<string>("Title")
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.Property<string>("Url")
+                .IsRequired()
+                .HasMaxLength(500)
+                .HasColumnType("character varying(500)");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("MediaAssets", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Product", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<string>("Name")
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("character varying(200)");
+
+            b.Property<decimal>("Price")
+                .HasColumnType("numeric(18,2)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.ToTable("Products", (string)null);
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Review", b =>
+        {
+            b.Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("integer")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            b.Property<string>("Comment")
+                .IsRequired()
+                .HasColumnType("text");
+
+            b.Property<DateTime>("CreatedAt")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("timezone('utc', now())");
+
+            b.Property<int>("ExpeditionId")
+                .HasColumnType("integer");
+
+            b.Property<bool>("IsApproved")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("boolean")
+                .HasDefaultValue(false);
+
+            b.Property<int>("Rating")
+                .HasColumnType("integer");
+
+            b.Property<string>("ReviewerName")
+                .HasMaxLength(120)
+                .HasColumnType("character varying(120)");
+
+            b.Property<DateTime?>("UpdatedAt")
+                .HasColumnType("timestamp with time zone");
+
+            b.HasKey("Id");
+
+            b.HasIndex("ExpeditionId");
+
+            b.ToTable("Reviews", (string)null);
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+        {
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                .WithMany()
+                .HasForeignKey("RoleId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+        {
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+        {
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+        {
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                .WithMany()
+                .HasForeignKey("RoleId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+        {
+            b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<int>", null)
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Expedition", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.ExpeditionCategory", "Category")
+                .WithMany("Expeditions")
+                .HasForeignKey("CategoryId")
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+            b.Navigation("Category");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionCategory", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.ExpeditionCategory", "ParentCategory")
+                .WithMany("ChildCategories")
+                .HasForeignKey("ParentCategoryId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            b.Navigation("ParentCategory");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionFact", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("Facts")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionVariant", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("Variants")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.FaqItem", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("FaqItems")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.FixedDeparture", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("FixedDepartures")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.HasOne("TravelAndTours.Domain.Entities.ExpeditionVariant", "Variant")
+                .WithMany()
+                .HasForeignKey("VariantId")
+                .OnDelete(DeleteBehavior.SetNull);
+
+            b.Navigation("Expedition");
+
+            b.Navigation("Variant");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ItineraryDay", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("ItineraryDays")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.MediaAsset", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("MediaAssets")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Review", b =>
+        {
+            b.HasOne("TravelAndTours.Domain.Entities.Expedition", "Expedition")
+                .WithMany("Reviews")
+                .HasForeignKey("ExpeditionId")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            b.Navigation("Expedition");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.ExpeditionCategory", b =>
+        {
+            b.Navigation("ChildCategories");
+
+            b.Navigation("Expeditions");
+        });
+
+        modelBuilder.Entity("TravelAndTours.Domain.Entities.Expedition", b =>
+        {
+            b.Navigation("Facts");
+
+            b.Navigation("FaqItems");
+
+            b.Navigation("FixedDepartures");
+
+            b.Navigation("ItineraryDays");
+
+            b.Navigation("MediaAssets");
+
+            b.Navigation("Reviews");
+
+            b.Navigation("Variants");
+        });
+#pragma warning restore 612, 618
+    }
+}
