@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Products.Commands.CreateProduct;
 using TravelAndTours.Application.Products.Commands.DeleteProduct;
 using TravelAndTours.Application.Products.Commands.UpdateProduct;
@@ -23,7 +24,7 @@ public sealed class ProductsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(IReadOnlyList<ProductDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<ProductDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([FromQuery] int page = 1, [FromQuery] int pageSize = 50, CancellationToken ct = default)
     {
         var result = await _mediator.Send(new GetProductsQuery(page, pageSize), ct);
