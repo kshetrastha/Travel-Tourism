@@ -122,8 +122,9 @@ public static class ExpeditionSeeder
             [
                 new FixedDeparture
             {
-                StartDate = new DateTime(DateTime.UtcNow.Year, 4, 5),
-                EndDate = new DateTime(DateTime.UtcNow.Year, 5, 20),
+                StartDate = new DateTime(DateTime.UtcNow.Year, 4, 5, 0, 0, 0, DateTimeKind.Utc),
+                EndDate   = new DateTime(DateTime.UtcNow.Year, 5, 20, 0, 0, 0, DateTimeKind.Utc),
+
                 Price = 65000m,
                 Currency = "USD",
                 SlotsTotal = 12,
@@ -134,8 +135,8 @@ public static class ExpeditionSeeder
             },
             new FixedDeparture
             {
-                StartDate = new DateTime(DateTime.UtcNow.Year, 4, 12),
-                EndDate = new DateTime(DateTime.UtcNow.Year, 5, 27),
+                 StartDate = new DateTime(DateTime.UtcNow.Year, 4, 5, 0, 0, 0, DateTimeKind.Utc),
+                EndDate   = new DateTime(DateTime.UtcNow.Year, 5, 20, 0, 0, 0, DateTimeKind.Utc),
                 Price = 85000m,
                 Currency = "USD",
                 SlotsTotal = 8,

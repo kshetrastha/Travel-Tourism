@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TravelAndTours.Domain.Common;
 using TravelAndTours.Domain.Entities;
 using TravelAndTours.Domain.Enums;
 using TravelAndTours.Infrastructure.Identity;
@@ -22,6 +23,21 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<FaqItem> FaqItems => Set<FaqItem>();
     public DbSet<Review> Reviews => Set<Review>();
+
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added)
+                entry.Entity.CreatedAt = DateTime.UtcNow;
+
+            if (entry.State == EntityState.Modified)
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
