@@ -9,15 +9,17 @@ public static class ExpeditionSeeder
 {
     public static async Task SeedAsync(IServiceProvider services, CancellationToken ct)
     {
-        using var scope = services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        if (await db.ExpeditionCategories.AnyAsync(ct))
+        try
         {
-            return;
-        }
+            using var scope = services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        var categories = new List<ExpeditionCategory>
+            if (await db.ExpeditionCategories.AnyAsync(ct))
+            {
+                return;
+            }
+
+            var categories = new List<ExpeditionCategory>
         {
             new() { Name = "VIP & Luxury Services", Slug = "vip-luxury-services", SortOrder = 1, IsActive = true, CreatedAt = DateTime.UtcNow },
             new() { Name = "Everest Expeditions", Slug = "everest-expeditions", SortOrder = 2, IsActive = true, CreatedAt = DateTime.UtcNow },
@@ -28,64 +30,64 @@ public static class ExpeditionSeeder
             new() { Name = "Double 8000ers", Slug = "double-8000ers", SortOrder = 7, IsActive = true, CreatedAt = DateTime.UtcNow }
         };
 
-        var category8000ers = categories.First(c => c.Slug == "8000ers");
+            var category8000ers = categories.First(c => c.Slug == "8000ers");
 
-        var expedition = new Expedition
-        {
-            Title = "Everest & Lhotse double 8000m Expedition 2026",
-            Slug = "everest-lhotse-double-8000ers",
-            ShortTitle = "Everest + Lhotse Double",
-            Tagline = "Two legendary peaks in one elite expedition season",
-            Category = category8000ers,
-            DurationDays = 45,
-            MaxAltitudeMeters = 8849,
-            Difficulty = DifficultyLevel.Extreme,
-            Region = "Khumbu",
-            Country = "Nepal",
-            BestSeason = "April - May",
-            GroupSizeMin = 4,
-            GroupSizeMax = 12,
-            StartingPoint = "Kathmandu",
-            EndingPoint = "Kathmandu",
-            OverviewMarkdown = "Experience the ultimate Himalayan challenge with a combined Everest and Lhotse expedition. This program blends summit pushes, acclimatization rotations, and premium logistics.",
-            IncludesMarkdown = "- Airport transfers and city logistics\n- Domestic flights to Lukla\n- Base camp accommodation and meals\n- Climbing permits and liaison officer\n- High-altitude Sherpa support",
-            ExcludesMarkdown = "- International airfare\n- Personal climbing gear\n- Travel insurance\n- Tips and personal expenses",
-            Status = ExpeditionStatus.Published,
-            PublishedAt = DateTime.UtcNow,
-            CreatedAt = DateTime.UtcNow
-        };
+            var expedition = new Expedition
+            {
+                Title = "Everest & Lhotse double 8000m Expedition 2026",
+                Slug = "everest-lhotse-double-8000ers",
+                ShortTitle = "Everest + Lhotse Double",
+                Tagline = "Two legendary peaks in one elite expedition season",
+                Category = category8000ers,
+                DurationDays = 45,
+                MaxAltitudeMeters = 8849,
+                Difficulty = DifficultyLevel.Extreme,
+                Region = "Khumbu",
+                Country = "Nepal",
+                BestSeason = "April - May",
+                GroupSizeMin = 4,
+                GroupSizeMax = 12,
+                StartingPoint = "Kathmandu",
+                EndingPoint = "Kathmandu",
+                OverviewMarkdown = "Experience the ultimate Himalayan challenge with a combined Everest and Lhotse expedition. This program blends summit pushes, acclimatization rotations, and premium logistics.",
+                IncludesMarkdown = "- Airport transfers and city logistics\n- Domestic flights to Lukla\n- Base camp accommodation and meals\n- Climbing permits and liaison officer\n- High-altitude Sherpa support",
+                ExcludesMarkdown = "- International airfare\n- Personal climbing gear\n- Travel insurance\n- Tips and personal expenses",
+                Status = ExpeditionStatus.Published,
+                PublishedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
+            };
 
-        expedition.Variants.Add(new ExpeditionVariant
-        {
-            VariantType = ExpeditionVariantType.Standard,
-            TitleOverride = "Standard Expedition",
-            PriceFrom = 65000m,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow
-        });
+            expedition.Variants.Add(new ExpeditionVariant
+            {
+                VariantType = ExpeditionVariantType.Standard,
+                TitleOverride = "Standard Expedition",
+                PriceFrom = 65000m,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            });
 
-        expedition.Variants.Add(new ExpeditionVariant
-        {
-            VariantType = ExpeditionVariantType.Vip,
-            TitleOverride = "VIP Expedition",
-            PriceFrom = 85000m,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow
-        });
+            expedition.Variants.Add(new ExpeditionVariant
+            {
+                VariantType = ExpeditionVariantType.Vip,
+                TitleOverride = "VIP Expedition",
+                PriceFrom = 85000m,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            });
 
-        expedition.Facts =
-        [
-            new ExpeditionFact { Label = "Duration", Value = "45 Days", SortOrder = 1, CreatedAt = DateTime.UtcNow },
+            expedition.Facts =
+            [
+                new ExpeditionFact { Label = "Duration", Value = "45 Days", SortOrder = 1, CreatedAt = DateTime.UtcNow },
             new ExpeditionFact { Label = "Max Altitude", Value = "8,849m", SortOrder = 2, CreatedAt = DateTime.UtcNow },
             new ExpeditionFact { Label = "Difficulty", Value = "Extreme", SortOrder = 3, CreatedAt = DateTime.UtcNow },
             new ExpeditionFact { Label = "Region", Value = "Khumbu, Nepal", SortOrder = 4, CreatedAt = DateTime.UtcNow },
             new ExpeditionFact { Label = "Best Season", Value = "April - May", SortOrder = 5, CreatedAt = DateTime.UtcNow },
             new ExpeditionFact { Label = "Group Size", Value = "4-12 climbers", SortOrder = 6, CreatedAt = DateTime.UtcNow }
-        ];
+            ];
 
-        expedition.ItineraryDays =
-        [
-            new ItineraryDay
+            expedition.ItineraryDays =
+            [
+                new ItineraryDay
             {
                 DayNumber = 1,
                 Title = "Arrival in Kathmandu",
@@ -114,11 +116,11 @@ public static class ExpeditionSeeder
                 ElevationMeters = 8849,
                 CreatedAt = DateTime.UtcNow
             }
-        ];
+            ];
 
-        expedition.FixedDepartures =
-        [
-            new FixedDeparture
+            expedition.FixedDepartures =
+            [
+                new FixedDeparture
             {
                 StartDate = new DateTime(DateTime.UtcNow.Year, 4, 5),
                 EndDate = new DateTime(DateTime.UtcNow.Year, 5, 20),
@@ -142,11 +144,11 @@ public static class ExpeditionSeeder
                 Notes = "VIP climbing team",
                 CreatedAt = DateTime.UtcNow
             }
-        ];
+            ];
 
-        expedition.MediaAssets =
-        [
-            new MediaAsset
+            expedition.MediaAssets =
+            [
+                new MediaAsset
             {
                 MediaType = MediaType.Image,
                 Url = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
@@ -173,11 +175,11 @@ public static class ExpeditionSeeder
                 SortOrder = 3,
                 CreatedAt = DateTime.UtcNow
             }
-        ];
+            ];
 
-        expedition.FaqItems =
-        [
-            new FaqItem
+            expedition.FaqItems =
+            [
+                new FaqItem
             {
                 Question = "Do I need prior 8000m experience?",
                 AnswerMarkdown = "Yes. Climbers should have at least one prior 8000m summit and extensive high-altitude experience.",
@@ -185,11 +187,11 @@ public static class ExpeditionSeeder
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             }
-        ];
+            ];
 
-        expedition.Reviews =
-        [
-            new Review
+            expedition.Reviews =
+            [
+                new Review
             {
                 ReviewerName = "Alex P.",
                 Rating = 5,
@@ -197,10 +199,16 @@ public static class ExpeditionSeeder
                 IsApproved = true,
                 CreatedAt = DateTime.UtcNow
             }
-        ];
+            ];
 
-        await db.ExpeditionCategories.AddRangeAsync(categories, ct);
-        await db.Expeditions.AddAsync(expedition, ct);
-        await db.SaveChangesAsync(ct);
+            await db.ExpeditionCategories.AddRangeAsync(categories, ct);
+            await db.Expeditions.AddAsync(expedition, ct);
+            await db.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
     }
 }

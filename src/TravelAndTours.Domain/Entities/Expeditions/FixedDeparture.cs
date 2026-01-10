@@ -7,8 +7,8 @@ public sealed class FixedDeparture : BaseEntity
 {
     public int ExpeditionId { get; set; }
     public int? VariantId { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.UtcNow;
+    public DateTime EndDate { get; set; }   =DateTime.UtcNow;
     public decimal Price { get; set; }
     public string Currency { get; set; } = "USD";
     public int SlotsTotal { get; set; }
