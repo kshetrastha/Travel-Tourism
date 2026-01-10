@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Storage;
+using TravelAndTours.Domain.Entities;
 using TravelAndTours.Domain.Interfaces;
 using TravelAndTours.Infrastructure.Persistence;
 
@@ -13,9 +14,27 @@ public sealed class UnitOfWork : IUnitOfWork
     {
         _db = db;
         Products = new ProductRepository(db);
+        ExpeditionCategories = new ExpeditionCategoryRepository(db);
+        Expeditions = new ExpeditionRepository(db);
+        ExpeditionVariants = new Repository<ExpeditionVariant>(db);
+        ExpeditionFacts = new Repository<ExpeditionFact>(db);
+        ItineraryDays = new Repository<ItineraryDay>(db);
+        FixedDepartures = new Repository<FixedDeparture>(db);
+        MediaAssets = new Repository<MediaAsset>(db);
+        FaqItems = new Repository<FaqItem>(db);
+        Reviews = new Repository<Review>(db);
     }
 
     public IProductRepository Products { get; }
+    public IExpeditionCategoryRepository ExpeditionCategories { get; }
+    public IExpeditionRepository Expeditions { get; }
+    public IRepository<ExpeditionVariant> ExpeditionVariants { get; }
+    public IRepository<ExpeditionFact> ExpeditionFacts { get; }
+    public IRepository<ItineraryDay> ItineraryDays { get; }
+    public IRepository<FixedDeparture> FixedDepartures { get; }
+    public IRepository<MediaAsset> MediaAssets { get; }
+    public IRepository<FaqItem> FaqItems { get; }
+    public IRepository<Review> Reviews { get; }
 
     public Task<int> SaveChangesAsync(CancellationToken ct) => _db.SaveChangesAsync(ct);
 

@@ -6,6 +6,7 @@ namespace TravelAndTours.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "ADMIN")]
+[ApiExplorerSettings(GroupName = "admin")]
 public sealed class AdminController : ControllerBase
 {
     [HttpGet("ping")]

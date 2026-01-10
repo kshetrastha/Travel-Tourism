@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TravelAndTours.Infrastructure.Persistence;
 
@@ -14,6 +15,11 @@ public static class IdentitySeeder
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await db.Database.MigrateAsync(ct);
 
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var seedSection = config.GetSection("SeedAdmin");
+        var adminEmail = seedSection.GetValue<string>("Email") ?? "admin@local.test";
+        var adminPassword = seedSection.GetValue<string>("Password") ?? "Admin@12345";
+
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -25,9 +31,6 @@ public static class IdentitySeeder
                 await roleManager.CreateAsync(new ApplicationRole { Name = role });
             }
         }
-
-        const string adminEmail = "admin@local.test";
-        const string adminPassword = "Admin@12345";
 
         var admin = await userManager.FindByEmailAsync(adminEmail);
         if (admin is null)
