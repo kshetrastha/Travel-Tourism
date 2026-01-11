@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero">
+    <div class="container hero-inner">
+        <p class="badge-soft mb-3">Nepal • Himalayas • Luxury</p>
+        <h1 class="display-6 fw-bold mb-3">Plan your next trip with TravelAndTours</h1>
+        <p class="lead text-white-50 mb-4">Explore curated tour packages, expeditions, and VIP services. Browse packages and book through your backend API.</p>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Browse packages</a>
+            <a class="btn btn-outline-light" asp-controller="Auth" asp-action="Register">Create account</a>
+        </div>
+
+        <div class="row g-3 mt-4">
+            <div class="col-md-4">
+                <div class="card card-tt">
+                    <div class="card-body">
+                        <div class="fw-semibold">Trusted operators</div>
+                        <div class="text-white-50">Built for real tour businesses, not a demo UI.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-tt">
+                    <div class="card-body">
+                        <div class="fw-semibold">Fast search</div>
+                        <div class="text-white-50">List and filter packages powered by TravelAndTours.Api.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-tt">
+                    <div class="card-body">
+                        <div class="fw-semibold">Admin CRUD</div>
+                        <div class="text-white-50">Manage packages securely with role-based access.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

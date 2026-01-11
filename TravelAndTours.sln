@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndTours.Domain", "src\TravelAndTours.Domain\TravelAndTours.Domain.csproj", "{B6A0E1E1-2D1E-4D92-92BC-6C1E82A5BE10}"
 EndProject
@@ -9,6 +9,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndTours.Infrastructure", "src\TravelAndTours.Infrastructure\TravelAndTours.Infrastructure.csproj", "{5C3E18C4-2C59-4A0C-8E37-9E8CB1F21C6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndTours.Api", "src\TravelAndTours.Api\TravelAndTours.Api.csproj", "{B18B1F5C-9D0B-4B6A-8E7E-81B9B4DDA0C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelAndTours.Web", "src\TravelAndTours.Web\TravelAndTours.Web.csproj", "{93811282-2B36-7197-A96B-3E245BA4469A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{B18B1F5C-9D0B-4B6A-8E7E-81B9B4DDA0C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B18B1F5C-9D0B-4B6A-8E7E-81B9B4DDA0C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B18B1F5C-9D0B-4B6A-8E7E-81B9B4DDA0C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93811282-2B36-7197-A96B-3E245BA4469A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93811282-2B36-7197-A96B-3E245BA4469A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93811282-2B36-7197-A96B-3E245BA4469A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93811282-2B36-7197-A96B-3E245BA4469A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

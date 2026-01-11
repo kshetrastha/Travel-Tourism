@@ -1,0 +1,62 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+
+    <title>@ViewData["Title"] - TravelAndTours</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/logo-icon.png" />
+
+    <!-- FontAwesome (same as template) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+          integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Template CSS -->
+    <link href="~/assets/css/style.min.css" rel="stylesheet" />
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <div class="preloader">
+            <!-- keep your SVG exactly as template -->
+            @* You can paste the full SVG here (same as login.html) *@
+            <svg class="preload-logo draw" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                 viewBox="0 0 62.8 45.2" style="enable-background:new 0 0 62.8 45.2;" xml:space="preserve">
+                <!-- SVG content omitted for brevity: paste the same SVG from login.html -->
+            </svg>
+        </div>
+
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background: url('@Url.Content("~/assets/images/login-bg.jpg")'); background-size: cover;">
+
+            <div class="auth-box">
+                <div class="logo-login mb-4">
+                    <img src="~/assets/images/logo-white.svg" alt="TravelAndTours">
+                </div>
+
+                <div class="bg-white rounded p-4">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(".preloader").fadeOut();
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

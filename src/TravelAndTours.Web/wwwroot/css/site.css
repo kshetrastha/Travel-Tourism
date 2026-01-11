@@ -1,0 +1,71 @@
+:root{
+  --tt-bg: #0b1220;
+  --tt-card: rgba(255,255,255,.06);
+  --tt-border: rgba(255,255,255,.12);
+  --tt-text: rgba(255,255,255,.92);
+}
+
+html, body {
+  height: 100%;
+}
+
+body{
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 10% 0%, rgba(99,102,241,.25), transparent 60%),
+              radial-gradient(900px 500px at 80% 10%, rgba(34,197,94,.18), transparent 60%),
+              var(--tt-bg);
+  color: var(--tt-text);
+}
+
+.site-header .navbar{
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+a{ text-decoration: none; }
+
+.hero{
+  padding: 70px 0 40px;
+}
+
+.hero-card{
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border: 1px solid var(--tt-border);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+.kpi{
+  background: var(--tt-card);
+  border: 1px solid var(--tt-border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.section-title{
+  font-weight: 700;
+}
+
+.tt-card{
+  background: var(--tt-card);
+  border: 1px solid var(--tt-border);
+  border-radius: 16px;
+}
+
+.form-card{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.table{
+  --bs-table-bg: transparent;
+  --bs-table-color: rgba(255,255,255,.9);
+  --bs-table-border-color: rgba(255,255,255,.12);
+}
+
+.alert{
+  border-radius: 14px;
+}
