@@ -34,6 +34,14 @@ public sealed class ApiClient
         res.EnsureSuccessStatusCode();
     }
 
+    public async Task<TOut?> PutAsync<TIn, TOut>(string url, TIn body, CancellationToken ct = default)
+    {
+        var res = await _http.PutAsJsonAsync(url, body, ct);
+        if (res.StatusCode == HttpStatusCode.NoContent) return default;
+        res.EnsureSuccessStatusCode();
+        return await res.Content.ReadFromJsonAsync<TOut>(cancellationToken: ct);
+    }
+
     public async Task DeleteAsync(string url, CancellationToken ct = default)
     {
         var res = await _http.DeleteAsync(url, ct);

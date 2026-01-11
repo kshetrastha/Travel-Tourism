@@ -10,6 +10,8 @@ using TravelAndTours.Application.Expeditions.Commands.ReplaceMedia;
 using TravelAndTours.Application.Expeditions.Commands.UnpublishExpedition;
 using TravelAndTours.Application.Expeditions.Commands.UpdateExpedition;
 using TravelAndTours.Application.Expeditions.Models;
+using TravelAndTours.Application.Expeditions.Queries.GetAdminExpeditionDetail;
+using TravelAndTours.Application.Expeditions.Queries.GetAdminExpeditions;
 
 namespace TravelAndTours.Api.Controllers;
 
@@ -24,6 +26,22 @@ public sealed class AdminExpeditionsController : ControllerBase
     public AdminExpeditionsController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<AdminExpeditionSummaryDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAdminExpeditionsQuery(), ct);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(AdminExpeditionDetailDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetById([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAdminExpeditionDetailQuery(id), ct);
+        return Ok(result);
     }
 
     [HttpPost]
