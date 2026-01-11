@@ -18,12 +18,12 @@ public sealed class AuthService : IAuthService
     {
         // Expected API endpoint: POST /api/auth/login
         var res = await _api.PostAsync<LoginViewModel, AuthResponse>("api/auth/login", vm, ct);
-        if (res is null || string.IsNullOrWhiteSpace(res.AccessToken)) return null;
+        if (res is null || string.IsNullOrWhiteSpace(res.Token)) return null;
 
         var session = _http.HttpContext?.Session;
         if (session is null) return null;
 
-        session.SetString(SessionKeys.AccessToken, res.AccessToken);
+        session.SetString(SessionKeys.AccessToken, res.Token);
         if (!string.IsNullOrWhiteSpace(res.Email)) session.SetString(SessionKeys.UserEmail, res.Email);
         if (!string.IsNullOrWhiteSpace(res.UserName)) session.SetString(SessionKeys.UserName, res.UserName);
 
@@ -36,7 +36,7 @@ public sealed class AuthService : IAuthService
             // Optional: try reading roles from JWT if API doesn't return roles
             try
             {
-                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(res.AccessToken);
+                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(res.Token);
                 var roles = jwt.Claims.Where(c => c.Type == "role" || c.Type.EndsWith("/claims/role")).Select(c => c.Value).Distinct().ToArray();
                 if (roles.Length > 0)
                     session.SetString(SessionKeys.UserRoles, string.Join(",", roles));

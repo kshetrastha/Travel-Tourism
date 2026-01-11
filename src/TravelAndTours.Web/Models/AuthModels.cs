@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-
 namespace TravelAndTours.Web.Models;
 
 public sealed class LoginViewModel
@@ -35,7 +34,10 @@ public sealed class RegisterViewModel
 // Matches typical API payloads (adjust if your API differs)
 public sealed class AuthResponse
 {
-    public string AccessToken { get; set; } = "";
+    public string Token { get; set; } = "";
+    public DateTime? ExpiresAt { get; set; }
+
+    public int UserId { get; set; }
     public string? UserName { get; set; }
     public string? Email { get; set; }
     public string[] Roles { get; set; } = Array.Empty<string>();
