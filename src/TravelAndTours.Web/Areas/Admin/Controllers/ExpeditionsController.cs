@@ -55,7 +55,7 @@ public class ExpeditionsController : Controller
         }
 
         var response = await _expeditions.CreateAsync(expedition, ct);
-        if (response?.Success != true || response.Data is null)
+        if (response?.Success != true || response.Data >0)
         {
             ModelState.AddModelError(string.Empty, response?.Message ?? "Unable to create expedition.");
             var categories = await _expeditions.GetCategoriesAsync(ct);
@@ -67,7 +67,7 @@ public class ExpeditionsController : Controller
         }
 
         TempData["StatusMessage"] = response.Message;
-        return RedirectToAction(nameof(Edit), new { id = response.Data.Value });
+        return RedirectToAction(nameof(Edit), new { id = response.Data });
     }
 
     [HttpGet]
