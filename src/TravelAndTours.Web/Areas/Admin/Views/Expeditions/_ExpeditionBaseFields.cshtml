@@ -1,0 +1,257 @@
+@model TravelAndTours.Web.Models.ExpeditionUpsertViewModel
+@{
+    var categories = ViewData["Categories"] as List<TravelAndTours.Web.Models.ExpeditionCategoryDto> ?? new();
+    var difficulties = new[] { "Easy", "Moderate", "Challenging", "Difficult", "Extreme" };
+    var variantTypes = new[] { "Standard", "Vip", "Luxury", "Vvip" };
+}
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="card card-tt mb-4">
+    <div class="card-body">
+        <h5 class="fw-semibold mb-3">Core details</h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" asp-for="Title"></label>
+                <input class="form-control" asp-for="Title" />
+                <span class="text-danger small" asp-validation-for="Title"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="Slug"></label>
+                <input class="form-control" asp-for="Slug" />
+                <span class="text-danger small" asp-validation-for="Slug"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="ShortTitle"></label>
+                <input class="form-control" asp-for="ShortTitle" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="Tagline"></label>
+                <input class="form-control" asp-for="Tagline" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="CategoryId">Category</label>
+                <select class="form-select" asp-for="CategoryId">
+                    <option value="">Select category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span class="text-danger small" asp-validation-for="CategoryId"></span>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="Difficulty"></label>
+                <select class="form-select" asp-for="Difficulty">
+                    @foreach (var difficulty in difficulties)
+                    {
+                        <option value="@difficulty">@difficulty</option>
+                    }
+                </select>
+                <span class="text-danger small" asp-validation-for="Difficulty"></span>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" asp-for="DurationDays"></label>
+                <input class="form-control" asp-for="DurationDays" type="number" min="1" />
+                <span class="text-danger small" asp-validation-for="DurationDays"></span>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" asp-for="MaxAltitudeMeters"></label>
+                <input class="form-control" asp-for="MaxAltitudeMeters" type="number" min="1" />
+                <span class="text-danger small" asp-validation-for="MaxAltitudeMeters"></span>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="Region"></label>
+                <input class="form-control" asp-for="Region" />
+                <span class="text-danger small" asp-validation-for="Region"></span>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="Country"></label>
+                <input class="form-control" asp-for="Country" />
+                <span class="text-danger small" asp-validation-for="Country"></span>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" asp-for="BestSeason"></label>
+                <input class="form-control" asp-for="BestSeason" />
+                <span class="text-danger small" asp-validation-for="BestSeason"></span>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" asp-for="GroupSizeMin"></label>
+                <input class="form-control" asp-for="GroupSizeMin" type="number" min="1" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" asp-for="GroupSizeMax"></label>
+                <input class="form-control" asp-for="GroupSizeMax" type="number" min="1" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" asp-for="StartingPoint"></label>
+                <input class="form-control" asp-for="StartingPoint" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" asp-for="EndingPoint"></label>
+                <input class="form-control" asp-for="EndingPoint" />
+            </div>
+            <div class="col-12">
+                <label class="form-label" asp-for="OverviewMarkdown"></label>
+                <textarea class="form-control" asp-for="OverviewMarkdown" rows="4"></textarea>
+                <span class="text-danger small" asp-validation-for="OverviewMarkdown"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="IncludesMarkdown"></label>
+                <textarea class="form-control" asp-for="IncludesMarkdown" rows="4"></textarea>
+                <span class="text-danger small" asp-validation-for="IncludesMarkdown"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" asp-for="ExcludesMarkdown"></label>
+                <textarea class="form-control" asp-for="ExcludesMarkdown" rows="4"></textarea>
+                <span class="text-danger small" asp-validation-for="ExcludesMarkdown"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-tt mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-semibold mb-0">Facts</h5>
+            <button class="btn btn-outline-light btn-sm" type="button" data-add-row="facts">Add fact</button>
+        </div>
+        <div class="text-danger small mb-2">@Html.ValidationMessageFor(m => m.Facts)</div>
+        <div data-list="facts" data-index="@Model.Facts.Count">
+            @for (var i = 0; i < Model.Facts.Count; i++)
+            {
+                <div class="row g-2 align-items-end mb-2">
+                    <div class="col-md-4">
+                        <label class="form-label">Label</label>
+                        <input class="form-control" asp-for="Facts[i].Label" />
+                        <span class="text-danger small" asp-validation-for="Facts[i].Label"></span>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Value</label>
+                        <input class="form-control" asp-for="Facts[i].Value" />
+                        <span class="text-danger small" asp-validation-for="Facts[i].Value"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Sort</label>
+                        <input class="form-control" asp-for="Facts[i].SortOrder" type="number" min="0" />
+                    </div>
+                </div>
+            }
+        </div>
+        <template data-template="facts">
+            <div class="row g-2 align-items-end mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Label</label>
+                    <input class="form-control" name="Facts[__index__].Label" />
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Value</label>
+                    <input class="form-control" name="Facts[__index__].Value" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sort</label>
+                    <input class="form-control" name="Facts[__index__].SortOrder" type="number" min="0" value="0" />
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+
+<div class="card card-tt mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-semibold mb-0">Variants</h5>
+            <button class="btn btn-outline-light btn-sm" type="button" data-add-row="variants">Add variant</button>
+        </div>
+        <div class="text-danger small mb-2">@Html.ValidationMessageFor(m => m.Variants)</div>
+        <div data-list="variants" data-index="@Model.Variants.Count">
+            @for (var i = 0; i < Model.Variants.Count; i++)
+            {
+                <div class="row g-2 align-items-end mb-3">
+                    <div class="col-md-2">
+                        <label class="form-label">Type</label>
+                        <select class="form-select" asp-for="Variants[i].VariantType">
+                            @foreach (var variant in variantTypes)
+                            {
+                                <option value="@variant">@variant</option>
+                            }
+                        </select>
+                        <span class="text-danger small" asp-validation-for="Variants[i].VariantType"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Title override</label>
+                        <input class="form-control" asp-for="Variants[i].TitleOverride" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Price from</label>
+                        <input class="form-control" asp-for="Variants[i].PriceFrom" type="number" min="0" step="0.01" />
+                        <span class="text-danger small" asp-validation-for="Variants[i].PriceFrom"></span>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label d-block">Active</label>
+                        <input class="form-check-input" asp-for="Variants[i].IsActive" type="checkbox" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Inclusions</label>
+                        <textarea class="form-control" asp-for="Variants[i].InclusionsOverrideMarkdown" rows="2"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Exclusions</label>
+                        <textarea class="form-control" asp-for="Variants[i].ExclusionsOverrideMarkdown" rows="2"></textarea>
+                    </div>
+                </div>
+            }
+        </div>
+        <template data-template="variants">
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-md-2">
+                    <label class="form-label">Type</label>
+                    <select class="form-select" name="Variants[__index__].VariantType">
+                        @foreach (var variant in variantTypes)
+                        {
+                            <option value="@variant">@variant</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Title override</label>
+                    <input class="form-control" name="Variants[__index__].TitleOverride" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Price from</label>
+                    <input class="form-control" name="Variants[__index__].PriceFrom" type="number" min="0" step="0.01" value="0" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label d-block">Active</label>
+                    <input class="form-check-input" name="Variants[__index__].IsActive" type="checkbox" checked />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Inclusions</label>
+                    <textarea class="form-control" name="Variants[__index__].InclusionsOverrideMarkdown" rows="2"></textarea>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Exclusions</label>
+                    <textarea class="form-control" name="Variants[__index__].ExclusionsOverrideMarkdown" rows="2"></textarea>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("[data-add-row]").forEach((button) => {
+            button.addEventListener("click", () => {
+                const listKey = button.getAttribute("data-add-row");
+                const list = document.querySelector(`[data-list='${listKey}']`);
+                const template = document.querySelector(`[data-template='${listKey}']`);
+                if (!list || !template) return;
+
+                const index = Number(list.dataset.index || "0");
+                const html = template.innerHTML.replace(/__index__/g, index);
+                list.insertAdjacentHTML("beforeend", html);
+                list.dataset.index = index + 1;
+            });
+        });
+    });
+</script>
