@@ -30,6 +30,14 @@ public class AuthController : Controller
             return View(vm);
         }
 
+        await _auth.SignInAsync(res, vm.RememberMe, ct);
+
+        var isAdmin = res.Roles.Any(role => role.Equals("admin", StringComparison.OrdinalIgnoreCase));
+        if (isAdmin)
+        {
+            return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+        }
+
         return RedirectToAction("Index", "Home");
     }
 
@@ -50,9 +58,9 @@ public class AuthController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout(CancellationToken ct)
     {
-        _auth.SignOut();
+        await _auth.SignOutAsync(ct);
         return RedirectToAction("Index", "Home");
     }
 }
