@@ -18,9 +18,16 @@ public sealed class RequireRoleAttribute : Attribute, IAuthorizationFilter
     {
         var session = context.HttpContext.Session;
         var token = session.GetString(SessionKeys.AccessToken);
-        if (string.IsNullOrWhiteSpace(token))
+        var isAuthenticated = context.HttpContext.User?.Identity?.IsAuthenticated == true;
+
+        if (!isAuthenticated && string.IsNullOrWhiteSpace(token))
         {
             context.Result = new RedirectToActionResult("Login", "Auth", null);
+            return;
+        }
+
+        if (context.HttpContext.User?.IsInRole(_role) == true)
+        {
             return;
         }
 

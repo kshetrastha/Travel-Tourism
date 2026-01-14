@@ -1,0 +1,49 @@
+.auth-wrapper {
+    min-height: 100vh;
+    padding: 2.5rem 1rem;
+    background-position: center;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 420px;
+}
+
+.logo-login img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.dashboard-hero {
+    border-radius: 1rem;
+}
+
+.dashboard-hero-image {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+}
+
+.topbar .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.topbar .navbar-brand img {
+    height: auto;
+    max-height: 36px;
+}
+
+@media (max-width: 576px) {
+    .auth-wrapper {
+        padding: 2rem 1rem;
+    }
+
+    .dashboard-hero-image {
+        max-width: 140px;
+    }
+}
