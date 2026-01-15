@@ -1,0 +1,95 @@
+@model TravelAndTours.Web.Models.AffiliateRewards.AffiliateRewardsIndexViewModel
+@{
+    var previousPage = Math.Max(1, Model.Page - 1);
+    var nextPage = Model.Page + 1;
+    var totalPages = Math.Max(1, Model.TotalPages);
+    var firstItemIndex = Model.Total == 0 ? 0 : ((Model.Page - 1) * Model.PageSize) + 1;
+    var lastItemIndex = Model.Total == 0 ? 0 : Math.Min(Model.Page * Model.PageSize, Model.Total);
+    var pageWindow = 2;
+    var startPage = Math.Max(1, Model.Page - pageWindow);
+    var endPage = Math.Min(totalPages, Model.Page + pageWindow);
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="table-responsive mb-2">
+    <table role="table" class="table table-hover color-table info-table customtable">
+        <thead role="rowgroup" class="bg-info text-white">
+            <tr>
+                <th scope="col">Log</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Bucket</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Reference</th>
+                <th scope="col">Remarks</th>
+                <th scope="col">Created</th>
+            </tr>
+        </thead>
+        <tbody role="rowgroup">
+            @if (Model.Items.Count == 0)
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No affiliate rewards found.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var log in Model.Items)
+                {
+                    var fromDisplay = string.IsNullOrWhiteSpace(log.FromFullName)
+                        ? (log.FromUserName ?? "-")
+                        : $"{log.FromFullName} ({log.FromUserName})";
+                    var toDisplay = string.IsNullOrWhiteSpace(log.ToFullName)
+                        ? (log.ToUserName ?? "-")
+                        : $"{log.ToFullName} ({log.ToUserName})";
+                    var bucketName = string.IsNullOrWhiteSpace(log.WalletBucketName)
+                        ? log.WalletBucket?.ToString()
+                        : log.WalletBucketName;
+
+                    <tr>
+                        <td data-label="Log">@log.IncomeLogId</td>
+                        <td data-label="From">@fromDisplay</td>
+                        <td data-label="To">@toDisplay</td>
+                        <td data-label="Bucket">@bucketName</td>
+                        <td data-label="Amount">@log.Amount.ToString("N2")</td>
+                        <td data-label="Reference">@log.Reference</td>
+                        <td data-label="Remarks">@log.Remarks</td>
+                        <td data-label="Created">@log.CreatedAt.ToLocalTime().ToString("g")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="pagination">
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link" href="#" data-page="1">«</a>
+            </li>
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link" href="#" data-page="@previousPage">&lt;</a>
+            </li>
+            @for (var pageNumber = startPage; pageNumber <= endPage; pageNumber++)
+            {
+                <li class="page-item @(pageNumber == Model.Page ? "active" : "")">
+                    <a class="page-link" href="#" data-page="@pageNumber">
+                        @pageNumber
+                    </a>
+                </li>
+            }
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link" href="#" data-page="@nextPage">&gt;</a>
+            </li>
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link" href="#" data-page="@totalPages">»</a>
+            </li>
+        </ul>
+        <div class="pager-info">Showing @firstItemIndex to @lastItemIndex of @Model.Total records</div>
+    </div>
+</div>
