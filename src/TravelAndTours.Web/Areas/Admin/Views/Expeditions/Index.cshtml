@@ -1,9 +1,6 @@
 @model TravelAndTours.Web.Models.AdminExpeditionsIndexViewModel
 @{
     ViewData["Title"] = "Admin - Expeditions";
-    var paged = Model.Expeditions;
-    var startItem = paged.TotalCount == 0 ? 0 : ((paged.Page - 1) * paged.PageSize) + 1;
-    var endItem = paged.TotalCount == 0 ? 0 : Math.Min(paged.Page * paged.PageSize, paged.TotalCount);
 }
 
 <div class="container py-5">
@@ -17,73 +14,93 @@
 
     <div class="card card-tt">
         <div class="card-body">
-            @if (paged.Items.Count == 0)
-            {
-                <div class="text-white-50">No expeditions yet.</div>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table table-dark align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th style="width:80px">Id</th>
-                                <th>Title</th>
-                                <th style="width:160px">Category</th>
-                                <th style="width:140px">Status</th>
-                                <th style="width:160px">Created</th>
-                                <th style="width:120px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var item in paged.Items)
-                        {
-                            <tr>
-                                <td>@item.Id</td>
-                                <td>
-                                    <div class="fw-semibold">@item.Title</div>
-                                    <div class="text-white-50 small">@item.Slug</div>
-                                </td>
-                                <td>@item.CategoryName</td>
-                                <td>@item.Status</td>
-                                <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
-                                <td class="text-end">
-                                    <a class="btn btn-outline-light btn-sm" asp-area="Admin" asp-controller="Expeditions" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="text-white-50 small" id="expeditionSummary"></div>
                 </div>
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mt-3">
-                    <div class="text-white-50 small">
-                        Showing @startItem-@endItem of @paged.TotalCount
-                    </div>
-                    @if (paged.TotalPages > 1)
-                    {
-                        <nav aria-label="Expedition pagination">
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item @(paged.Page <= 1 ? "disabled" : string.Empty)">
-                                    <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page - 1)">
-                                        Previous
-                                    </a>
-                                </li>
-                                @for (var i = 1; i <= paged.TotalPages; i++)
-                                {
-                                    <li class="page-item @(i == paged.Page ? "active" : string.Empty)">
-                                        <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@i">@i</a>
-                                    </li>
-                                }
-                                <li class="page-item @(paged.Page >= paged.TotalPages ? "disabled" : string.Empty)">
-                                    <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page + 1)">
-                                        Next
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    }
+                <div class="col-md-6 text-md-end">
+                    <form class="page-size-selector" data-expeditions-table-form>
+                        @Html.AntiForgeryToken()
+                        <select id="expeditionsPageSize"
+                                name="pageSize"
+                                class="form-control d-inline-block w-auto"
+                                onchange="onExpeditionsPageSizeChanged()">
+                            <option value="10" selected="@(Model.PageSize == 10)">10 Rows/Page</option>
+                            <option value="20" selected="@(Model.PageSize == 20)">20 Rows/Page</option>
+                            <option value="50" selected="@(Model.PageSize == 50)">50 Rows/Page</option>
+                            <option value="100" selected="@(Model.PageSize == 100)">100 Rows/Page</option>
+                        </select>
+                        <input type="hidden" name="page" value="1" />
+                    </form>
                 </div>
-            }
+            </div>
+            <div id="expeditionsTableContainer" data-expeditions-table-url="@Url.Action("Table", "Expeditions", new { area = "Admin" })">
+                @await Html.PartialAsync("_ExpeditionsTable", Model)
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            function loadExpeditionsTable(page, pageSize) {
+                var container = document.getElementById("expeditionsTableContainer");
+                if (!container) {
+                    return;
+                }
+                var url = container.getAttribute("data-expeditions-table-url");
+                if (!url) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').first().val();
+                showLoader();
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        page: page,
+                        pageSize: pageSize
+                    },
+                    headers: { "RequestVerificationToken": token }
+                })
+                    .done(function (html) {
+                        hideLoader();
+                        container.innerHTML = html;
+                        updateSummary();
+                    })
+                    .fail(function () {
+                        hideLoader();
+                    });
+            }
+
+            function updateSummary() {
+                var summary = $("#expeditionsTableContainer").find("[data-expeditions-summary]").data("expeditions-summary");
+                $("#expeditionSummary").text(summary || "");
+            }
+
+            window.onExpeditionsPageSizeChanged = function () {
+                var pageSize = $("#expeditionsPageSize").val();
+                loadExpeditionsTable(1, pageSize);
+            };
+
+            $(document).on("click", "#expeditionsTableContainer .pagination .page-link", function (event) {
+                event.preventDefault();
+                var page = $(this).data("page");
+                if (!page || $(this).closest(".page-item").hasClass("disabled")) {
+                    return;
+                }
+                var pageSize = $("#expeditionsPageSize").val();
+                loadExpeditionsTable(page, pageSize);
+            });
+
+            $(document).on("submit", "[data-expeditions-table-form]", function (event) {
+                event.preventDefault();
+                var pageSize = $("#expeditionsPageSize").val();
+                loadExpeditionsTable(1, pageSize);
+            });
+
+            updateSummary();
+        })();
+    </script>
+}
