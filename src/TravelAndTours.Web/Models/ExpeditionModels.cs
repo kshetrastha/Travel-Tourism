@@ -14,8 +14,10 @@ public sealed record PagedResult<T>(
     IReadOnlyList<T> Items,
     int Page,
     int PageSize,
-    int TotalCount,
-    int TotalPages);
+    long TotalCount,
+    int TotalPages,
+    bool HasNextPage,
+    bool HasPreviousPage);
 
 public sealed record ExpeditionCategoryDto(
     int Id,
@@ -37,7 +39,7 @@ public sealed record AdminExpeditionListItemDto(
 public sealed class AdminExpeditionsIndexViewModel
 {
     public PagedResult<AdminExpeditionListItemDto> Expeditions { get; init; }
-        = new([], 1, 10, 0, 0);
+        = new([], 1, 10, 0, 0, false, false);
     public int PageSize { get; init; } = 10;
 }
 
