@@ -17,15 +17,31 @@ public class ExpeditionsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int page = 1, CancellationToken ct = default)
+    public async Task<IActionResult> Index([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
     {
-        const int pageSize = 10;
         var currentPage = page < 1 ? 1 : page;
-        var items = await _expeditions.GetAllAsync(currentPage, pageSize, ct);
+        var currentPageSize = pageSize < 1 ? 10 : pageSize;
+        var items = await _expeditions.GetAllAsync(currentPage, currentPageSize, ct);
         return View(new AdminExpeditionsIndexViewModel
         {
-            Expeditions = items
+            Expeditions = items,
+            PageSize = currentPageSize
         });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Table([FromForm] int page = 1, [FromForm] int pageSize = 10, CancellationToken ct = default)
+    {
+        var currentPage = page < 1 ? 1 : page;
+        var currentPageSize = pageSize < 1 ? 10 : pageSize;
+        var items = await _expeditions.GetAllAsync(currentPage, currentPageSize, ct);
+        var vm = new AdminExpeditionsIndexViewModel
+        {
+            Expeditions = items,
+            PageSize = currentPageSize
+        };
+        return PartialView("_ExpeditionsTable", vm);
     }
 
     [HttpGet]

@@ -38,6 +38,7 @@ public sealed class AdminExpeditionsIndexViewModel
 {
     public PagedResult<AdminExpeditionListItemDto> Expeditions { get; init; }
         = new([], 1, 10, 0, 0);
+    public int PageSize { get; init; } = 10;
 }
 
 public sealed record AdminExpeditionDetailDto(
