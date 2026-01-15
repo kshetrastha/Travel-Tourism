@@ -1,10 +1,11 @@
 using MediatR;
+using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Expeditions.Models;
 using TravelAndTours.Domain.Interfaces;
 
 namespace TravelAndTours.Application.Expeditions.Queries.GetAdminExpeditions;
 
-public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminExpeditionsQuery, IReadOnlyList<AdminExpeditionSummaryDto>>
+public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminExpeditionsQuery, PagedResult<AdminExpeditionSummaryDto>>
 {
     private readonly IUnitOfWork _uow;
 
@@ -13,10 +14,19 @@ public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminEx
         _uow = uow;
     }
 
-    public Task<IReadOnlyList<AdminExpeditionSummaryDto>> Handle(GetAdminExpeditionsQuery request, CancellationToken ct)
+    public Task<PagedResult<AdminExpeditionSummaryDto>> Handle(GetAdminExpeditionsQuery request, CancellationToken ct)
     {
-        var items = _uow.Expeditions.Query()
-            .OrderByDescending(x => x.CreatedAt)
+        var query = _uow.Expeditions.Query()
+            .OrderByDescending(x => x.CreatedAt);
+
+        var totalCount = query.Count();
+        var totalPages = totalCount == 0
+            ? 0
+            : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+
+        var items = query
+            .Skip((request.Page - 1) * request.PageSize)
+            .Take(request.PageSize)
             .Select(x => new AdminExpeditionSummaryDto(
                 x.Id,
                 x.Title,
@@ -28,6 +38,13 @@ public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminEx
             .ToList()
             .AsReadOnly();
 
-        return Task.FromResult<IReadOnlyList<AdminExpeditionSummaryDto>>(items);
+        var result = new PagedResult<AdminExpeditionSummaryDto>(
+            items,
+            request.Page,
+            request.PageSize,
+            totalCount,
+            totalPages);
+
+        return Task.FromResult(result);
     }
 }
