@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using TravelAndTours.Application.Common.Mapping;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Products.Models;
@@ -20,30 +21,35 @@ public sealed class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, 
 
     public async Task<PagedResult<ProductDto>> Handle(GetProductsQuery request, CancellationToken ct)
     {
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 100);
+
         // Query() returns IQueryable so Infrastructure can provide EF Core provider
         var baseQuery = _uow.Products.Query();
-        var totalCount = baseQuery.Count();
+        var totalCount = await baseQuery.LongCountAsync(ct);
         var totalPages = totalCount == 0
             ? 0
-            : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+            : (int)Math.Ceiling(totalCount / (double)pageSize);
 
         var query = baseQuery
             .OrderByDescending(x => x.Id)
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize);
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
 
         // Materialize in Infrastructure provider
         // We keep handler provider-agnostic; repo Query() decides how it executes.
-        var list = query.ToList(); // For EF Core this is executed in Infrastructure assembly
+        var list = await query.ToListAsync(ct); // For EF Core this is executed in Infrastructure assembly
         _logger.LogInformation("Fetched {Count} products out of {TotalCount}.", list.Count, totalCount);
 
         var items = list.Select(p => p.ToDto()).ToList();
 
         return new PagedResult<ProductDto>(
             items,
-            request.Page,
-            request.PageSize,
+            page,
+            pageSize,
             totalCount,
-            totalPages);
+            totalPages,
+            page < totalPages,
+            page > 1);
     }
 }

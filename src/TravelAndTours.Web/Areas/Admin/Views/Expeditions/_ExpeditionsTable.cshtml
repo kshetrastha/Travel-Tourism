@@ -1,8 +1,8 @@
 @model TravelAndTours.Web.Models.AdminExpeditionsIndexViewModel
 @{
     var paged = Model.Expeditions;
-    var startItem = paged.TotalCount == 0 ? 0 : ((paged.Page - 1) * paged.PageSize) + 1;
-    var endItem = paged.TotalCount == 0 ? 0 : Math.Min(paged.Page * paged.PageSize, paged.TotalCount);
+    var startItem = paged.TotalCount == 0 ? 0L : ((paged.Page - 1) * (long)paged.PageSize) + 1;
+    var endItem = paged.TotalCount == 0 ? 0L : Math.Min(paged.Page * (long)paged.PageSize, paged.TotalCount);
     var summary = $"Showing {startItem}-{endItem} of {paged.TotalCount}";
     var maxPageLinks = 5;
     var halfWindow = maxPageLinks / 2;
@@ -62,12 +62,12 @@ else
         {
             <nav aria-label="Expedition pagination">
                 <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item @(paged.Page <= 1 ? "disabled" : string.Empty)">
+                    <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="1" data-page="1" aria-label="First page">
                             First
                         </a>
                     </li>
-                    <li class="page-item @(paged.Page <= 1 ? "disabled" : string.Empty)">
+                    <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page - 1)" data-page="@(paged.Page - 1)">
                             Previous
                         </a>
@@ -102,12 +102,12 @@ else
                             <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@paged.TotalPages" data-page="@paged.TotalPages">@paged.TotalPages</a>
                         </li>
                     }
-                    <li class="page-item @(paged.Page >= paged.TotalPages ? "disabled" : string.Empty)">
+                    <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page + 1)" data-page="@(paged.Page + 1)">
                             Next
                         </a>
                     </li>
-                    <li class="page-item @(paged.Page >= paged.TotalPages ? "disabled" : string.Empty)">
+                    <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@paged.TotalPages" data-page="@paged.TotalPages" aria-label="Last page">
                             Last
                         </a>
