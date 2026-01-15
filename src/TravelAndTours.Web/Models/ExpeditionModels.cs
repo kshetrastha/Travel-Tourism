@@ -10,6 +10,13 @@ public sealed class ApiResponse<T>
     public List<string> Errors { get; init; } = [];
 }
 
+public sealed record PagedResult<T>(
+    IReadOnlyList<T> Items,
+    int Page,
+    int PageSize,
+    int TotalCount,
+    int TotalPages);
+
 public sealed record ExpeditionCategoryDto(
     int Id,
     string Name,
@@ -26,6 +33,12 @@ public sealed record AdminExpeditionListItemDto(
     string CategoryName,
     DateTime CreatedAt,
     DateTime? UpdatedAt);
+
+public sealed class AdminExpeditionsIndexViewModel
+{
+    public PagedResult<AdminExpeditionListItemDto> Expeditions { get; init; }
+        = new([], 1, 10, 0, 0);
+}
 
 public sealed record AdminExpeditionDetailDto(
     int Id,

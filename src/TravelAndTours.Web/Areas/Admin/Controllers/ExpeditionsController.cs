@@ -17,10 +17,15 @@ public class ExpeditionsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(CancellationToken ct)
+    public async Task<IActionResult> Index([FromQuery] int page = 1, CancellationToken ct = default)
     {
-        var items = await _expeditions.GetAllAsync(ct);
-        return View(items);
+        const int pageSize = 10;
+        var currentPage = page < 1 ? 1 : page;
+        var items = await _expeditions.GetAllAsync(currentPage, pageSize, ct);
+        return View(new AdminExpeditionsIndexViewModel
+        {
+            Expeditions = items
+        });
     }
 
     [HttpGet]

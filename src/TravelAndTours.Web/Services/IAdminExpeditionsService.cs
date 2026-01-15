@@ -4,7 +4,7 @@ namespace TravelAndTours.Web.Services;
 
 public interface IAdminExpeditionsService
 {
-    Task<List<AdminExpeditionListItemDto>> GetAllAsync(CancellationToken ct = default);
+    Task<PagedResult<AdminExpeditionListItemDto>> GetAllAsync(int page, int pageSize, CancellationToken ct = default);
     Task<AdminExpeditionDetailDto?> GetByIdAsync(int id, CancellationToken ct = default);
     Task<List<ExpeditionCategoryDto>> GetCategoriesAsync(CancellationToken ct = default);
     Task<ApiResponse<int>?> CreateAsync(ExpeditionUpsertViewModel vm, CancellationToken ct = default);

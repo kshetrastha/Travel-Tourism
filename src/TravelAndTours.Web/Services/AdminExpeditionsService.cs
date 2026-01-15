@@ -11,8 +11,9 @@ public sealed class AdminExpeditionsService : IAdminExpeditionsService
         _api = api;
     }
 
-    public async Task<List<AdminExpeditionListItemDto>> GetAllAsync(CancellationToken ct = default)
-        => await _api.GetAsync<List<AdminExpeditionListItemDto>>("api/admin/expeditions", ct) ?? [];
+    public async Task<PagedResult<AdminExpeditionListItemDto>> GetAllAsync(int page, int pageSize, CancellationToken ct = default)
+        => await _api.GetAsync<PagedResult<AdminExpeditionListItemDto>>($"api/admin/expeditions?page={page}&pageSize={pageSize}", ct)
+           ?? new PagedResult<AdminExpeditionListItemDto>([], page, pageSize, 0, 0);
 
     public Task<AdminExpeditionDetailDto?> GetByIdAsync(int id, CancellationToken ct = default)
         => _api.GetAsync<AdminExpeditionDetailDto>($"api/admin/expeditions/{id}", ct);

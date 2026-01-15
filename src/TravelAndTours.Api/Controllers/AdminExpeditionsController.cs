@@ -29,10 +29,10 @@ public sealed class AdminExpeditionsController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<AdminExpeditionSummaryDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken ct)
+    [ProducesResponseType(typeof(PagedResult<AdminExpeditionSummaryDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
     {
-        var result = await _mediator.Send(new GetAdminExpeditionsQuery(), ct);
+        var result = await _mediator.Send(new GetAdminExpeditionsQuery(page, pageSize), ct);
         return Ok(result);
     }
 
