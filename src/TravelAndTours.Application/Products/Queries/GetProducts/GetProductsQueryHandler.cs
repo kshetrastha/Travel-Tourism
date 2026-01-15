@@ -1,6 +1,6 @@
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TravelAndTours.Application.Common.Mapping;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Products.Models;
