@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Expeditions.Models;
 using TravelAndTours.Domain.Enums;
@@ -15,8 +16,11 @@ public sealed class GetExpeditionsQueryHandler : IRequestHandler<GetExpeditionsQ
         _uow = uow;
     }
 
-    public Task<PagedResult<ExpeditionCardDto>> Handle(GetExpeditionsQuery request, CancellationToken ct)
+    public async Task<PagedResult<ExpeditionCardDto>> Handle(GetExpeditionsQuery request, CancellationToken ct)
     {
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 100);
+
         var query = _uow.Expeditions.Query()
             .Where(x => x.Status == ExpeditionStatus.Published);
 
@@ -28,14 +32,14 @@ public sealed class GetExpeditionsQueryHandler : IRequestHandler<GetExpeditionsQ
 
         query = ApplySorting(query, request.SortBy, request.SortDirection);
 
-        var totalCount = query.Count();
+        var totalCount = await query.LongCountAsync(ct);
         var totalPages = totalCount == 0
             ? 0
-            : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+            : (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        var items = query
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize)
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(x => new ExpeditionCardDto(
                 x.Id,
                 x.Title,
@@ -59,16 +63,18 @@ public sealed class GetExpeditionsQueryHandler : IRequestHandler<GetExpeditionsQ
                     .Select(v => (decimal?)v.PriceFrom)
                     .FirstOrDefault(),
                 x.PublishedAt))
-            .ToList();
+            .ToListAsync(ct);
 
         var result = new PagedResult<ExpeditionCardDto>(
             items,
-            request.Page,
-            request.PageSize,
+            page,
+            pageSize,
             totalCount,
-            totalPages);
+            totalPages,
+            page < totalPages,
+            page > 1);
 
-        return Task.FromResult(result);
+        return result;
     }
 
     private static IQueryable<Domain.Entities.Expedition> ApplySorting(

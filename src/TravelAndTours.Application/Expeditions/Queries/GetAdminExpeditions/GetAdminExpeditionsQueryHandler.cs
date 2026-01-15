@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Expeditions.Models;
 using TravelAndTours.Domain.Interfaces;
@@ -14,19 +15,22 @@ public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminEx
         _uow = uow;
     }
 
-    public Task<PagedResult<AdminExpeditionSummaryDto>> Handle(GetAdminExpeditionsQuery request, CancellationToken ct)
+    public async Task<PagedResult<AdminExpeditionSummaryDto>> Handle(GetAdminExpeditionsQuery request, CancellationToken ct)
     {
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 100);
+
         var query = _uow.Expeditions.Query()
             .OrderByDescending(x => x.CreatedAt);
 
-        var totalCount = query.Count();
+        var totalCount = await query.LongCountAsync(ct);
         var totalPages = totalCount == 0
             ? 0
-            : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+            : (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        var items = query
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize)
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(x => new AdminExpeditionSummaryDto(
                 x.Id,
                 x.Title,
@@ -35,16 +39,17 @@ public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminEx
                 x.Category != null ? x.Category.Name : "Unassigned",
                 x.CreatedAt,
                 x.UpdatedAt))
-            .ToList()
-            .AsReadOnly();
+            .ToListAsync(ct);
 
         var result = new PagedResult<AdminExpeditionSummaryDto>(
-            items,
-            request.Page,
-            request.PageSize,
+            items.AsReadOnly(),
+            page,
+            pageSize,
             totalCount,
-            totalPages);
+            totalPages,
+            page < totalPages,
+            page > 1);
 
-        return Task.FromResult(result);
+        return result;
     }
 }
