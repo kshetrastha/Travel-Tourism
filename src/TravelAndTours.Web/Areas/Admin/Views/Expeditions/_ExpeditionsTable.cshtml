@@ -4,6 +4,14 @@
     var startItem = paged.TotalCount == 0 ? 0 : ((paged.Page - 1) * paged.PageSize) + 1;
     var endItem = paged.TotalCount == 0 ? 0 : Math.Min(paged.Page * paged.PageSize, paged.TotalCount);
     var summary = $"Showing {startItem}-{endItem} of {paged.TotalCount}";
+    var maxPageLinks = 5;
+    var halfWindow = maxPageLinks / 2;
+    var startPage = Math.Max(1, paged.Page - halfWindow);
+    var endPage = Math.Min(paged.TotalPages, startPage + maxPageLinks - 1);
+    if (endPage - startPage + 1 < maxPageLinks)
+    {
+        startPage = Math.Max(1, endPage - maxPageLinks + 1);
+    }
 }
 
 <div data-expeditions-summary="@summary"></div>
@@ -55,19 +63,53 @@ else
             <nav aria-label="Expedition pagination">
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item @(paged.Page <= 1 ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="1" data-page="1" aria-label="First page">
+                            First
+                        </a>
+                    </li>
+                    <li class="page-item @(paged.Page <= 1 ? "disabled" : string.Empty)">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page - 1)" data-page="@(paged.Page - 1)">
                             Previous
                         </a>
                     </li>
-                    @for (var i = 1; i <= paged.TotalPages; i++)
+                    @if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="1" data-page="1">1</a>
+                        </li>
+                        @if (startPage > 2)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                        }
+                    }
+                    @for (var i = startPage; i <= endPage; i++)
                     {
                         <li class="page-item @(i == paged.Page ? "active" : string.Empty)">
                             <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@i" data-page="@i">@i</a>
                         </li>
                     }
+                    @if (endPage < paged.TotalPages)
+                    {
+                        @if (endPage < paged.TotalPages - 1)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">…</span>
+                            </li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@paged.TotalPages" data-page="@paged.TotalPages">@paged.TotalPages</a>
+                        </li>
+                    }
                     <li class="page-item @(paged.Page >= paged.TotalPages ? "disabled" : string.Empty)">
                         <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@(paged.Page + 1)" data-page="@(paged.Page + 1)">
                             Next
+                        </a>
+                    </li>
+                    <li class="page-item @(paged.Page >= paged.TotalPages ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-area="Admin" asp-controller="Expeditions" asp-action="Index" asp-route-page="@paged.TotalPages" data-page="@paged.TotalPages" aria-label="Last page">
+                            Last
                         </a>
                     </li>
                 </ul>
