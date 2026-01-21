@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Expeditions.Commands.CreateExpedition;
+using TravelAndTours.Application.Expeditions.Commands.DeleteExpedition;
 using TravelAndTours.Application.Expeditions.Commands.PublishExpedition;
 using TravelAndTours.Application.Expeditions.Commands.ReplaceFixedDepartures;
 using TravelAndTours.Application.Expeditions.Commands.ReplaceItinerary;
@@ -57,6 +58,14 @@ public sealed class AdminExpeditionsController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ExpeditionUpsertModel request, CancellationToken ct)
     {
         var result = await _mediator.Send(new UpdateExpeditionCommand(id, request), ct);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new DeleteExpeditionCommand(id), ct);
         return Ok(result);
     }
 
