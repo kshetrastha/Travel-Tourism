@@ -18,46 +18,64 @@ public sealed class ReplaceFixedDeparturesCommandHandler : IRequestHandler<Repla
 
     public async Task<ApiResponse<bool>> Handle(ReplaceFixedDeparturesCommand request, CancellationToken ct)
     {
-        var expedition = await _uow.Expeditions.GetByIdAsync(request.ExpeditionId, ct);
-        if (expedition is null)
+        try
         {
-            throw new NotFoundException("Expedition not found.");
-        }
-
-        var existing = _uow.FixedDepartures.Query()
-            .Where(x => x.ExpeditionId == expedition.Id)
-            .ToList();
-
-        foreach (var departure in existing)
-        {
-            _uow.FixedDepartures.Remove(departure);
-        }
-
-        foreach (var departure in request.Departures)
-        {
-            if (!Enum.TryParse<FixedDepartureStatus>(departure.Status, true, out var status))
+            var expedition = await _uow.Expeditions.GetByIdAsync(request.ExpeditionId, ct);
+            if (expedition is null)
             {
-                return ApiResponse<bool>.Fail($"Invalid fixed departure status '{departure.Status}'.");
+                throw new NotFoundException("Expedition not found.");
             }
 
-            await _uow.FixedDepartures.AddAsync(new FixedDeparture
+            var existing = _uow.FixedDepartures.Query()
+                .Where(x => x.ExpeditionId == expedition.Id)
+                .ToList();
+
+            foreach (var departure in existing)
             {
-                ExpeditionId = expedition.Id,
-                VariantId = departure.VariantId,
-                StartDate = departure.StartDate,
-                EndDate = departure.EndDate,
-                Price = departure.Price,
-                Currency = departure.Currency.Trim().ToUpperInvariant(),
-                SlotsTotal = departure.SlotsTotal,
-                SlotsAvailable = departure.SlotsAvailable,
-                Status = status,
-                Notes = departure.Notes?.Trim(),
-                CreatedAt = DateTime.UtcNow
-            }, ct);
+                _uow.FixedDepartures.Remove(departure);
+            }
+
+            foreach (var departure in request.Departures)
+            {
+                if (!Enum.TryParse<FixedDepartureStatus>(departure.Status, true, out var status))
+                {
+                    return ApiResponse<bool>.Fail($"Invalid fixed departure status '{departure.Status}'.");
+                }
+
+                await _uow.FixedDepartures.AddAsync(new FixedDeparture
+                {
+                    ExpeditionId = expedition.Id,
+                    VariantId = departure.VariantId,
+                    StartDate = EnsureUtc(departure.StartDate),
+                    EndDate = EnsureUtc(departure.EndDate),
+                    Price = departure.Price,
+                    Currency = departure.Currency.Trim().ToUpperInvariant(),
+                    SlotsTotal = departure.SlotsTotal,
+                    SlotsAvailable = departure.SlotsAvailable,
+                    Status = status,
+                    Notes = departure.Notes?.Trim(),
+                    CreatedAt = DateTime.UtcNow
+                }, ct);
+            }
+
+            await _uow.SaveChangesAsync(ct);
+
+            return ApiResponse<bool>.Ok(true, "Fixed departures updated.");
         }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 
-        await _uow.SaveChangesAsync(ct);
-
-        return ApiResponse<bool>.Ok(true, "Fixed departures updated.");
+    private static DateTime EnsureUtc(DateTime dt)
+    {
+        return dt.Kind switch
+        {
+            DateTimeKind.Utc => dt,
+            DateTimeKind.Local => dt.ToUniversalTime(),
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(dt, DateTimeKind.Utc),
+            _ => DateTime.SpecifyKind(dt, DateTimeKind.Utc)
+        };
     }
 }
