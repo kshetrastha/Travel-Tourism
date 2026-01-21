@@ -36,11 +36,35 @@ public sealed record AdminExpeditionListItemDto(
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
+public sealed record ExpeditionCardDto(
+    int Id,
+    string Title,
+    string Slug,
+    string? ShortTitle,
+    string? Tagline,
+    int DurationDays,
+    int MaxAltitudeMeters,
+    string Difficulty,
+    string Region,
+    string Country,
+    string BestSeason,
+    string CategorySlug,
+    string? CoverImageUrl,
+    decimal? PriceFrom,
+    DateTime? PublishedAt);
+
 public sealed class AdminExpeditionsIndexViewModel
 {
     public PagedResult<AdminExpeditionListItemDto> Expeditions { get; init; }
         = new([], 1, 10, 0, 0, false, false);
     public int PageSize { get; init; } = 10;
+}
+
+public sealed class ExpeditionsIndexViewModel
+{
+    public PagedResult<ExpeditionCardDto> Expeditions { get; init; }
+        = new([], 1, 9, 0, 0, false, false);
+    public int PageSize { get; init; } = 9;
 }
 
 public sealed record AdminExpeditionDetailDto(

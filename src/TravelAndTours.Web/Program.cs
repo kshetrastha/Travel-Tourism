@@ -43,6 +43,7 @@ builder.Services.AddHttpClient<ApiClient>((sp, http) =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<IAdminExpeditionsService, AdminExpeditionsService>();
+builder.Services.AddScoped<IExpeditionsService, ExpeditionsService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
