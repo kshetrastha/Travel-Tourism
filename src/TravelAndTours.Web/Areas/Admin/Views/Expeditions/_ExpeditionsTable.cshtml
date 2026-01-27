@@ -45,7 +45,15 @@ else
                     <td>@item.Status</td>
                     <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
                     <td class="text-end">
-                        <a class="btn btn-outline-light btn-sm" asp-area="Admin" asp-controller="Expeditions" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <div class="d-inline-flex gap-2">
+                            <a class="btn btn-outline-light btn-sm" asp-area="Admin" asp-controller="Expeditions" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <form asp-area="Admin" asp-controller="Expeditions" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button class="btn btn-outline-danger btn-sm" type="submit" onclick="return confirm('Delete this expedition? This cannot be undone.');">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             }

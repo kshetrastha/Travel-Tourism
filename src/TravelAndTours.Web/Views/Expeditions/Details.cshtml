@@ -1,0 +1,164 @@
+@model TravelAndTours.Web.Models.ExpeditionDetailViewModel
+@{
+    ViewData["Title"] = Model.Expedition.Title;
+    var expedition = Model.Expedition;
+    var hero = Model.HeroMedia;
+}
+
+<section class="hero-section text-white">
+    @if (hero is not null)
+    {
+        <div class="hero-image" style="background-image: url('@hero.Url')"></div>
+    }
+    <div class="container position-relative py-5">
+        <div class="hero-content">
+            <div class="text-uppercase small text-warning fw-semibold">@expedition.Category.Name</div>
+            <h1 class="display-5 fw-bold">@expedition.Title</h1>
+            @if (!string.IsNullOrWhiteSpace(expedition.Tagline))
+            {
+                <p class="lead text-white-50">@expedition.Tagline</p>
+            }
+            <div class="d-flex flex-wrap gap-3 text-white-50 small">
+                <span>@expedition.DurationDays days</span>
+                <span>@expedition.MaxAltitudeMeters m max altitude</span>
+                <span>@expedition.Difficulty</span>
+                <span>@expedition.Region, @expedition.Country</span>
+                <span>Best season: @expedition.BestSeason</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card card-tt mb-4">
+                <div class="card-body">
+                    <h4 class="fw-semibold">Overview</h4>
+                    <p class="text-white-50">@expedition.OverviewMarkdown</p>
+                </div>
+            </div>
+
+            <div class="card card-tt mb-4">
+                <div class="card-body">
+                    <h4 class="fw-semibold">What’s included</h4>
+                    <p class="text-white-50">@expedition.IncludesMarkdown</p>
+                    <h4 class="fw-semibold mt-4">What’s excluded</h4>
+                    <p class="text-white-50">@expedition.ExcludesMarkdown</p>
+                </div>
+            </div>
+
+            @if (expedition.ItineraryDays.Count > 0)
+            {
+                <div class="card card-tt mb-4">
+                    <div class="card-body">
+                        <h4 class="fw-semibold">Itinerary</h4>
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var day in expedition.ItineraryDays)
+                            {
+                                <div class="border-bottom border-dark pb-3">
+                                    <div class="fw-semibold">Day @day.DayNumber: @day.Title</div>
+                                    <div class="text-white-50 small">@day.DescriptionMarkdown</div>
+                                    <div class="text-white-50 small mt-2">
+                                        @if (!string.IsNullOrWhiteSpace(day.Meals))
+                                        {
+                                            <span>Meals: @day.Meals</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(day.Accommodation))
+                                        {
+                                            <span class="ms-3">Stay: @day.Accommodation</span>
+                                        }
+                                        @if (day.ElevationMeters.HasValue)
+                                        {
+                                            <span class="ms-3">Elevation: @day.ElevationMeters m</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (expedition.Media.Count > 1)
+            {
+                <div class="card card-tt">
+                    <div class="card-body">
+                        <h4 class="fw-semibold">Gallery</h4>
+                        <div class="row g-3">
+                            @foreach (var media in expedition.Media.Skip(1))
+                            {
+                                <div class="col-md-6">
+                                    <img class="img-fluid rounded" src="@media.Url" alt="@media.Title" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-tt mb-4">
+                <div class="card-body">
+                    <h5 class="fw-semibold">Trip facts</h5>
+                    <ul class="list-unstyled text-white-50 small">
+                        @foreach (var fact in expedition.Facts)
+                        {
+                            <li class="mb-2"><strong class="text-white">@fact.Label:</strong> @fact.Value</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            @if (expedition.Variants.Count > 0)
+            {
+                <div class="card card-tt mb-4">
+                    <div class="card-body">
+                        <h5 class="fw-semibold">Available packages</h5>
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var variant in expedition.Variants)
+                            {
+                                <div class="border border-dark rounded p-3">
+                                    <div class="fw-semibold">@variant.VariantType</div>
+                                    <div class="text-white-50 small">From $@variant.PriceFrom</div>
+                                    @if (!string.IsNullOrWhiteSpace(variant.TitleOverride))
+                                    {
+                                        <div class="text-white-50 small mt-2">@variant.TitleOverride</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (expedition.FixedDepartures.Count > 0)
+            {
+                <div class="card card-tt mb-4">
+                    <div class="card-body">
+                        <h5 class="fw-semibold">Upcoming departures</h5>
+                        <div class="d-flex flex-column gap-2 text-white-50 small">
+                            @foreach (var departure in expedition.FixedDepartures)
+                            {
+                                <div class="border border-dark rounded p-3">
+                                    <div class="fw-semibold text-white">@departure.StartDate:yyyy-MM-dd to @departure.EndDate:yyyy-MM-dd</div>
+                                    <div>@departure.Currency @departure.Price</div>
+                                    <div>Status: @departure.Status</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="card card-tt">
+                <div class="card-body">
+                    <h5 class="fw-semibold">Start planning</h5>
+                    <p class="text-white-50 small">Connect with our team to tailor your expedition.</p>
+                    <button class="btn btn-primary w-100">Inquiry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

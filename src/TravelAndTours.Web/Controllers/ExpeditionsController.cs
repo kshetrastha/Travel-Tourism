@@ -29,4 +29,28 @@ public class ExpeditionsController : Controller
 
         return View(vm);
     }
+
+    [HttpGet("expeditions/{slug}")]
+    public async Task<IActionResult> Details(string slug, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            return NotFound();
+        }
+
+        var detail = await _expeditions.GetDetailAsync(slug, ct);
+        if (detail is null)
+        {
+            return NotFound();
+        }
+
+        var heroMedia = detail.Media.FirstOrDefault();
+        var vm = new ExpeditionDetailViewModel
+        {
+            Expedition = detail,
+            HeroMedia = heroMedia
+        };
+
+        return View(vm);
+    }
 }

@@ -9,6 +9,7 @@ public interface IAdminExpeditionsService
     Task<List<ExpeditionCategoryDto>> GetCategoriesAsync(CancellationToken ct = default);
     Task<ApiResponse<int>?> CreateAsync(ExpeditionUpsertViewModel vm, CancellationToken ct = default);
     Task<ApiResponse<bool>?> UpdateAsync(int id, ExpeditionUpsertViewModel vm, CancellationToken ct = default);
+    Task<ApiResponse<bool>?> DeleteAsync(int id, CancellationToken ct = default);
     Task<ApiResponse<bool>?> PublishAsync(int id, CancellationToken ct = default);
     Task<ApiResponse<bool>?> UnpublishAsync(int id, CancellationToken ct = default);
     Task<ApiResponse<bool>?> ReplaceItineraryAsync(int id, IReadOnlyList<ItineraryDayInputViewModel> days, CancellationToken ct = default);

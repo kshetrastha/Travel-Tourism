@@ -76,7 +76,7 @@ public class ExpeditionsController : Controller
         }
 
         var response = await _expeditions.CreateAsync(expedition, ct);
-        if (response?.Success != true || response.Data >0)
+        if (response?.Success != true || response.Data <= 0)
         {
             ModelState.AddModelError(string.Empty, response?.Message ?? "Unable to create expedition.");
             var categories = await _expeditions.GetCategoriesAsync(ct);
@@ -198,6 +198,21 @@ public class ExpeditionsController : Controller
         var response = await _expeditions.UnpublishAsync(id, ct);
         TempData["StatusMessage"] = response?.Message ?? "Unable to unpublish expedition.";
         return RedirectToAction(nameof(Edit), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        var response = await _expeditions.DeleteAsync(id, ct);
+        if (response?.Success != true)
+        {
+            TempData["StatusMessage"] = response?.Message ?? "Unable to delete expedition.";
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        TempData["StatusMessage"] = response.Message;
+        return RedirectToAction(nameof(Index));
     }
 
     private async Task<IActionResult> RenderEditWithBaseAsync(int id, ExpeditionUpsertViewModel expedition, CancellationToken ct)
