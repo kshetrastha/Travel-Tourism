@@ -33,6 +33,9 @@ public sealed class AdminExpeditionsService : IAdminExpeditionsService
             ExpeditionUpsertRequest.From(vm),
             ct);
 
+    public Task<ApiResponse<bool>?> DeleteAsync(int id, CancellationToken ct = default)
+        => _api.DeleteAsync<ApiResponse<bool>>($"api/admin/expeditions/{id}", ct);
+
     public Task<ApiResponse<bool>?> PublishAsync(int id, CancellationToken ct = default)
         => _api.PostAsync<object, ApiResponse<bool>>($"api/admin/expeditions/{id}/publish", new { }, ct);
 

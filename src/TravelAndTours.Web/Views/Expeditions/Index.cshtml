@@ -63,6 +63,14 @@
                                 <div>Difficulty: @item.Difficulty</div>
                                 <div>Best season: @item.BestSeason</div>
                             </div>
+                            <div class="mt-3">
+                                <a class="btn btn-outline-light btn-sm"
+                                   asp-controller="Expeditions"
+                                   asp-action="Details"
+                                   asp-route-slug="@item.Slug">
+                                    View details
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

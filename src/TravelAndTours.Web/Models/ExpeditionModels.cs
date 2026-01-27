@@ -53,6 +53,35 @@ public sealed record ExpeditionCardDto(
     decimal? PriceFrom,
     DateTime? PublishedAt);
 
+public sealed record ExpeditionDetailDto(
+    int Id,
+    string Title,
+    string Slug,
+    string? ShortTitle,
+    string? Tagline,
+    int DurationDays,
+    int MaxAltitudeMeters,
+    string Difficulty,
+    string Region,
+    string Country,
+    string BestSeason,
+    int? GroupSizeMin,
+    int? GroupSizeMax,
+    string? StartingPoint,
+    string? EndingPoint,
+    string OverviewMarkdown,
+    string IncludesMarkdown,
+    string ExcludesMarkdown,
+    DateTime? PublishedAt,
+    ExpeditionCategoryDto Category,
+    IReadOnlyList<ExpeditionFactDto> Facts,
+    IReadOnlyList<ExpeditionVariantDto> Variants,
+    IReadOnlyList<ItineraryDayDto> ItineraryDays,
+    IReadOnlyList<FixedDepartureDto> FixedDepartures,
+    IReadOnlyList<MediaAssetDto> Media,
+    IReadOnlyList<FaqItemDto> Faqs,
+    IReadOnlyList<ReviewDto> Reviews);
+
 public sealed class AdminExpeditionsIndexViewModel
 {
     public PagedResult<AdminExpeditionListItemDto> Expeditions { get; init; }
@@ -65,6 +94,12 @@ public sealed class ExpeditionsIndexViewModel
     public PagedResult<ExpeditionCardDto> Expeditions { get; init; }
         = new([], 1, 9, 0, 0, false, false);
     public int PageSize { get; init; } = 9;
+}
+
+public sealed class ExpeditionDetailViewModel
+{
+    public ExpeditionDetailDto Expedition { get; init; } = default!;
+    public MediaAssetDto? HeroMedia { get; init; }
 }
 
 public sealed record AdminExpeditionDetailDto(
@@ -138,6 +173,21 @@ public sealed record MediaAssetDto(
     string? ThumbnailUrl,
     string? Title,
     int SortOrder);
+
+public sealed record FaqItemDto(
+    int Id,
+    string Question,
+    string AnswerMarkdown,
+    int SortOrder,
+    bool IsActive);
+
+public sealed record ReviewDto(
+    int Id,
+    string ReviewerName,
+    int Rating,
+    string Comment,
+    DateTime CreatedAt,
+    bool IsApproved);
 
 public sealed class ExpeditionFactInputViewModel
 {
