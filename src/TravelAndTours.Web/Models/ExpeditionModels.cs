@@ -27,6 +27,32 @@ public sealed record ExpeditionCategoryDto(
     int SortOrder,
     bool IsActive);
 
+public sealed class ExpeditionCategoryUpsertViewModel
+{
+    public int? Id { get; set; }
+
+    [Required]
+    [StringLength(200)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(200)]
+    public string Slug { get; set; } = string.Empty;
+
+    public int? ParentCategoryId { get; set; }
+
+    [Range(0, 999)]
+    public int SortOrder { get; set; }
+
+    public bool IsActive { get; set; } = true;
+}
+
+public sealed class ExpeditionCategoryEditViewModel
+{
+    public ExpeditionCategoryUpsertViewModel Category { get; set; } = new();
+    public List<ExpeditionCategoryDto> ParentOptions { get; set; } = [];
+}
+
 public sealed record AdminExpeditionListItemDto(
     int Id,
     string Title,

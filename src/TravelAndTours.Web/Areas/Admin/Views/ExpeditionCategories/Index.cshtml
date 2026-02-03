@@ -1,0 +1,74 @@
+@model List<TravelAndTours.Web.Models.ExpeditionCategoryDto>
+@{
+    ViewData["Title"] = "Admin - Expedition Categories";
+    var parentLookup = Model.ToDictionary(x => x.Id, x => x.Name);
+}
+
+<div class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Manage Expedition Categories</h2>
+            <div class="text-white-50">Admin only</div>
+        </div>
+        <a class="btn btn-primary" asp-area="Admin" asp-controller="ExpeditionCategories" asp-action="Create">Add category</a>
+    </div>
+
+    @if (TempData["StatusMessage"] is string statusMessage && !string.IsNullOrWhiteSpace(statusMessage))
+    {
+        <div class="alert alert-info">@statusMessage</div>
+    }
+
+    <div class="card card-tt">
+        <div class="card-body">
+            @if (Model.Count == 0)
+            {
+                <div class="text-white-50">No categories yet.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-dark align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width:80px">Id</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Parent</th>
+                                <th style="width:120px">Sort</th>
+                                <th style="width:120px">Active</th>
+                                <th style="width:180px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var parentName = item.ParentCategoryId.HasValue && parentLookup.TryGetValue(item.ParentCategoryId.Value, out var name)
+                                ? name
+                                : "-";
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Slug</td>
+                                <td>@parentName</td>
+                                <td>@item.SortOrder</td>
+                                <td>
+                                    <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(item.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a class="btn btn-outline-light btn-sm" asp-area="Admin" asp-controller="ExpeditionCategories" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                                    <form asp-area="Admin" asp-controller="ExpeditionCategories" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button class="btn btn-outline-danger btn-sm" type="submit" onclick="return confirm('Delete this category?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

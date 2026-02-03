@@ -1,0 +1,28 @@
+@model TravelAndTours.Web.Models.ExpeditionCategoryEditViewModel
+@{
+    ViewData["Title"] = "Edit Expedition Category";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Edit Expedition Category</h2>
+            <div class="text-white-50">Updates /api/admin/expedition-categories/@Model.Category.Id</div>
+        </div>
+        <a class="btn btn-outline-light" asp-area="Admin" asp-controller="ExpeditionCategories" asp-action="Index">Back</a>
+    </div>
+
+    <div class="card card-tt">
+        <div class="card-body p-4">
+            <form asp-action="Edit" asp-route-id="@Model.Category.Id" method="post">
+                @Html.AntiForgeryToken()
+                <partial name="_CategoryForm" model="Model" />
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

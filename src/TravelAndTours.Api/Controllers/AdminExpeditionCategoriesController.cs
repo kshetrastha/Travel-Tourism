@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelAndTours.Application.Common.Models;
 using TravelAndTours.Application.Expeditions.Commands.CreateExpeditionCategory;
+using TravelAndTours.Application.Expeditions.Commands.DeleteExpeditionCategory;
 using TravelAndTours.Application.Expeditions.Commands.UpdateExpeditionCategory;
 using TravelAndTours.Application.Expeditions.Models;
+using TravelAndTours.Application.Expeditions.Queries.GetAdminExpeditionCategories;
+using TravelAndTours.Application.Expeditions.Queries.GetAdminExpeditionCategoryById;
 
 namespace TravelAndTours.Api.Controllers;
 
@@ -19,6 +22,22 @@ public sealed class AdminExpeditionCategoriesController : ControllerBase
     public AdminExpeditionCategoriesController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<ExpeditionCategoryDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAdminExpeditionCategoriesQuery(), ct);
+        return Ok(result);
+    }
+
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ExpeditionCategoryDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetById([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new GetAdminExpeditionCategoryByIdQuery(id), ct);
+        return Ok(result);
     }
 
     [HttpPost]
@@ -47,6 +66,14 @@ public sealed class AdminExpeditionCategoriesController : ControllerBase
             request.SortOrder,
             request.IsActive), ct);
 
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken ct)
+    {
+        var result = await _mediator.Send(new DeleteExpeditionCategoryCommand(id), ct);
         return Ok(result);
     }
 }
