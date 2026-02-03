@@ -24,6 +24,11 @@ public sealed class ReplaceMediaCommandHandler : IRequestHandler<ReplaceMediaCom
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         var existing = _uow.MediaAssets.Query()
             .Where(x => x.ExpeditionId == expedition.Id)
             .ToList();

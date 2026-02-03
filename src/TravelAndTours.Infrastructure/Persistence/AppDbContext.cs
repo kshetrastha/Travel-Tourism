@@ -143,6 +143,11 @@ public sealed class AppDbContext : IdentityDbContext<ApplicationUser, Applicatio
             b.Property(x => x.ExcludesMarkdown)
                 .HasColumnType("text");
 
+            b.Property(x => x.Type)
+                .HasConversion<string>()
+                .HasMaxLength(30)
+                .HasDefaultValue(ExpeditionType.Expedition);
+
             b.Property(x => x.Status)
                 .HasConversion<string>()
                 .HasMaxLength(20)

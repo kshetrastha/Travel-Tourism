@@ -45,6 +45,8 @@ builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<IAdminExpeditionCategoriesService, AdminExpeditionCategoriesService>();
 builder.Services.AddScoped<IAdminExpeditionsService, AdminExpeditionsService>();
 builder.Services.AddScoped<IExpeditionsService, ExpeditionsService>();
+builder.Services.AddScoped<IAdminTrekkingService, AdminTrekkingService>();
+builder.Services.AddScoped<ITrekkingService, TrekkingService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 

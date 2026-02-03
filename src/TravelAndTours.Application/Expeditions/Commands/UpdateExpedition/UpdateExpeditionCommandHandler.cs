@@ -24,6 +24,11 @@ public sealed class UpdateExpeditionCommandHandler : IRequestHandler<UpdateExped
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         var model = request.Model;
         var normalizedSlug = model.Slug.Trim();
 

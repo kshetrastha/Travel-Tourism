@@ -1,0 +1,106 @@
+@model TravelAndTours.Web.Models.AdminExpeditionsIndexViewModel
+@{
+    ViewData["Title"] = "Admin - Trekking";
+}
+
+<div class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Manage Trekking</h2>
+            <div class="text-white-50">Admin only</div>
+        </div>
+        <a class="btn btn-primary" asp-area="Admin" asp-controller="Trekking" asp-action="Create">Add trekking</a>
+    </div>
+
+    <div class="card card-tt">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="text-white-50 small" id="trekkingSummary"></div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form class="page-size-selector" data-trekking-table-form>
+                        @Html.AntiForgeryToken()
+                        <select id="trekkingPageSize"
+                                name="pageSize"
+                                class="form-control d-inline-block w-auto"
+                                onchange="onTrekkingPageSizeChanged()">
+                            <option value="10" selected="@(Model.PageSize == 10)">10 Rows/Page</option>
+                            <option value="20" selected="@(Model.PageSize == 20)">20 Rows/Page</option>
+                            <option value="50" selected="@(Model.PageSize == 50)">50 Rows/Page</option>
+                            <option value="100" selected="@(Model.PageSize == 100)">100 Rows/Page</option>
+                        </select>
+                        <input type="hidden" name="page" value="1" />
+                    </form>
+                </div>
+            </div>
+            <div id="trekkingTableContainer" data-trekking-table-url="@Url.Action("Table", "Trekking", new { area = "Admin" })">
+                @await Html.PartialAsync("_TrekkingTable", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            function loadTrekkingTable(page, pageSize) {
+                var container = document.getElementById("trekkingTableContainer");
+                if (!container) {
+                    return;
+                }
+                var url = container.getAttribute("data-trekking-table-url");
+                if (!url) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').first().val();
+                showLoader();
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        page: page,
+                        pageSize: pageSize
+                    },
+                    headers: { "RequestVerificationToken": token }
+                })
+                    .done(function (html) {
+                        hideLoader();
+                        container.innerHTML = html;
+                        updateSummary();
+                    })
+                    .fail(function () {
+                        hideLoader();
+                    });
+            }
+
+            function updateSummary() {
+                var summary = $("#trekkingTableContainer").find("[data-trekking-summary]").data("trekking-summary");
+                $("#trekkingSummary").text(summary || "");
+            }
+
+            window.onTrekkingPageSizeChanged = function () {
+                var pageSize = $("#trekkingPageSize").val();
+                loadTrekkingTable(1, pageSize);
+            };
+
+            $(document).on("click", "#trekkingTableContainer .pagination .page-link", function (event) {
+                event.preventDefault();
+                var page = $(this).data("page");
+                if (!page || $(this).closest(".page-item").hasClass("disabled")) {
+                    return;
+                }
+                var pageSize = $("#trekkingPageSize").val();
+                loadTrekkingTable(page, pageSize);
+            });
+
+            $(document).on("submit", "[data-trekking-table-form]", function (event) {
+                event.preventDefault();
+                var pageSize = $("#trekkingPageSize").val();
+                loadTrekkingTable(1, pageSize);
+            });
+
+            updateSummary();
+        })();
+    </script>
+}

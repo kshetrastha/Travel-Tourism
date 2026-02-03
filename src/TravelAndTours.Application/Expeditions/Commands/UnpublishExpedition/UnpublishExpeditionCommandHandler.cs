@@ -23,6 +23,11 @@ public sealed class UnpublishExpeditionCommandHandler : IRequestHandler<Unpublis
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         expedition.Status = ExpeditionStatus.Draft;
         expedition.PublishedAt = null;
         expedition.UpdatedAt = DateTime.UtcNow;

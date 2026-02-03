@@ -21,6 +21,7 @@ public sealed class GetAdminExpeditionsQueryHandler : IRequestHandler<GetAdminEx
         var pageSize = Math.Clamp(request.PageSize, 1, 100);
 
         var query = _uow.Expeditions.Query()
+            .Where(x => x.Type == request.Type)
             .OrderByDescending(x => x.CreatedAt);
 
         var totalCount = await query.LongCountAsync(ct);

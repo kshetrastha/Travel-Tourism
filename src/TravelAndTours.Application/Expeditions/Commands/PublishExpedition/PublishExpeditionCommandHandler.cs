@@ -23,6 +23,11 @@ public sealed class PublishExpeditionCommandHandler : IRequestHandler<PublishExp
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         if (string.IsNullOrWhiteSpace(expedition.OverviewMarkdown)
             || string.IsNullOrWhiteSpace(expedition.IncludesMarkdown)
             || string.IsNullOrWhiteSpace(expedition.ExcludesMarkdown))

@@ -20,7 +20,7 @@ public sealed class GetExpeditionDetailQueryHandler : IRequestHandler<GetExpedit
         var slug = request.Slug.Trim();
 
         var detail = _uow.Expeditions.Query()
-            .Where(x => x.Status == ExpeditionStatus.Published && x.Slug == slug)
+            .Where(x => x.Status == ExpeditionStatus.Published && x.Type == request.Type && x.Slug == slug)
             .Select(x => new ExpeditionDetailDto(
                 x.Id,
                 x.Title,

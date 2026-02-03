@@ -1,0 +1,618 @@
+@model TravelAndTours.Web.Models.ExpeditionAdminEditViewModel
+@{
+    ViewData["Title"] = "Admin - Edit Trekking";
+    var fixedStatuses = new[] { "Open", "Closed", "Guaranteed", "OnRequest" };
+    var mediaTypes = new[] { "Image", "Video" };
+}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Edit Trekking</h2>
+            <div class="text-black-50">Manage trekking content, departures, and media.</div>
+        </div>
+        <a class="btn btn-dark-success btn-outline-dark" asp-area="Admin" asp-controller="Trekking" asp-action="Index">Back to list</a>
+    </div>
+    @if (TempData["StatusMessage"] is string message)
+    {
+        <div class="alert alert-info border-0">@message</div>
+    }
+    <div class="card card-tt mb-4">
+        <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <div class="text-white-50 small">Status</div>
+                <div class="fw-semibold">@Model.Status</div>
+                @if (Model.PublishedAt.HasValue)
+                {
+                    <div class="text-white-50 small">Published @Model.PublishedAt.Value.ToString("yyyy-MM-dd")</div>
+                }
+            </div>
+            <div class="d-flex gap-2">
+                <form asp-area="Admin" asp-controller="Trekking" asp-action="Publish" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-success" type="submit">Publish</button>
+                </form>
+                <form asp-area="Admin" asp-controller="Trekking" asp-action="Unpublish" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-outline-warning" type="submit">Unpublish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateBase" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <div class="text-danger mb-3">@Html.ValidationSummary()</div>
+        @await Html.PartialAsync("~/Areas/Admin/Views/Expeditions/_ExpeditionBaseFields.cshtml", Model.Expedition, new ViewDataDictionary(ViewData) { ["Categories"] = Model.Categories })
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <button class="btn btn-primary" type="submit">Save core details</button>
+        </div>
+    </form>
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateItinerary" asp-route-id="@Model.Id" method="post" class="mb-4">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Itinerary</h5>
+                    <button class="btn btn-outline-dark btn-sm" type="button" data-add-row="itinerary">Add day</button>
+                </div>
+                <div data-list="itinerary" data-index="@Model.ItineraryDays.Count">
+                    @for (var i = 0; i < Model.ItineraryDays.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Day</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].DayNumber" type="number" min="1" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Title</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Title" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" asp-for="ItineraryDays[i].DescriptionMarkdown" rows="2"></textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Meals</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Meals" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Accommodation</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Accommodation" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Elevation</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].ElevationMeters" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="itinerary">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Day</label>
+                            <input class="form-control" name="ItineraryDays[__index__].DayNumber" type="number" min="1" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Title" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="ItineraryDays[__index__].DescriptionMarkdown" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Meals</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Meals" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Accommodation</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Accommodation" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Elevation</label>
+                            <input class="form-control" name="ItineraryDays[__index__].ElevationMeters" type="number" min="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save itinerary</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateFixedDepartures" asp-route-id="@Model.Id" method="post" class="mb-4">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Fixed departures</h5>
+                    <button class="btn btn-outline-dark btn-sm" type="button" data-add-row="fixed">Add departure</button>
+                </div>
+                <div data-list="fixed" data-index="@Model.FixedDepartures.Count">
+                    @for (var i = 0; i < Model.FixedDepartures.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Start</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].StartDate" type="date" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">End</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].EndDate" type="date" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Price</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Price" type="number" min="0" step="0.01" />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Currency</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Currency" maxlength="3" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Slots total</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].SlotsTotal" type="number" min="0" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Slots available</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].SlotsAvailable" type="number" min="0" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" asp-for="FixedDepartures[i].Status">
+                                    @foreach (var status in fixedStatuses)
+                                    {
+                                        <option value="@status">@status</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Notes</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Notes" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Variant id</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].VariantId" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="fixed">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Start</label>
+                            <input class="form-control" name="FixedDepartures[__index__].StartDate" type="date" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">End</label>
+                            <input class="form-control" name="FixedDepartures[__index__].EndDate" type="date" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Price</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Price" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Currency</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Currency" maxlength="3" value="USD" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Slots total</label>
+                            <input class="form-control" name="FixedDepartures[__index__].SlotsTotal" type="number" min="0" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Slots available</label>
+                            <input class="form-control" name="FixedDepartures[__index__].SlotsAvailable" type="number" min="0" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="FixedDepartures[__index__].Status">
+                                @foreach (var status in fixedStatuses)
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Notes</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Notes" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Variant id</label>
+                            <input class="form-control" name="FixedDepartures[__index__].VariantId" type="number" min="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save departures</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateMedia" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Media assets</h5>
+                    <button class="btn btn-outline-dark btn-sm" type="button" data-add-row="media">Add media</button>
+                </div>
+                <div data-list="media" data-index="@Model.Media.Count">
+                    @for (var i = 0; i < Model.Media.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" asp-for="Media[i].MediaType">
+                                    @foreach (var mediaType in mediaTypes)
+                                    {
+                                        <option value="@mediaType">@mediaType</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">URL</label>
+                                <input class="form-control" asp-for="Media[i].Url" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Thumbnail</label>
+                                <input class="form-control" asp-for="Media[i].ThumbnailUrl" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Title</label>
+                                <input class="form-control" asp-for="Media[i].Title" />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Sort</label>
+                                <input class="form-control" asp-for="Media[i].SortOrder" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="media">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" name="Media[__index__].MediaType">
+                                @foreach (var mediaType in mediaTypes)
+                                {
+                                    <option value="@mediaType">@mediaType</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">URL</label>
+                            <input class="form-control" name="Media[__index__].Url" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Thumbnail</label>
+                            <input class="form-control" name="Media[__index__].ThumbnailUrl" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="Media[__index__].Title" />
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Sort</label>
+                            <input class="form-control" name="Media[__index__].SortOrder" type="number" min="0" value="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save media</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@* @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
+
+@* <div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Edit Trekking</h2>
+            <div class="text-white-50">Manage trekking content, departures, and media.</div>
+        </div>
+        <a class="btn btn-dark-success btn-outline-light" asp-area="Admin" asp-controller="Trekking" asp-action="Index">Back to list</a>
+    </div>
+
+    @if (TempData["StatusMessage"] is string message)
+    {
+        <div class="alert alert-info border-0">@message</div>
+    }
+
+    <div class="card card-tt mb-4">
+        <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <div class="text-white-50 small">Status</div>
+                <div class="fw-semibold">@Model.Status</div>
+                @if (Model.PublishedAt.HasValue)
+                {
+                    <div class="text-white-50 small">Published @Model.PublishedAt.Value.ToString("yyyy-MM-dd")</div>
+                }
+            </div>
+            <div class="d-flex gap-2">
+                <form asp-area="Admin" asp-controller="Trekking" asp-action="Publish" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-success" type="submit">Publish</button>
+                </form>
+                <form asp-area="Admin" asp-controller="Trekking" asp-action="Unpublish" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-outline-warning" type="submit">Unpublish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateBase" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <div class="text-danger mb-3">@Html.ValidationSummary()</div>
+        @await Html.PartialAsync("~/Areas/Admin/Views/Expeditions/_ExpeditionBaseFields.cshtml", Model.Expedition, new ViewDataDictionary(ViewData) { ["Categories"] = Model.Categories })
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <button class="btn btn-primary" type="submit">Save core details</button>
+        </div>
+    </form>
+
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateItinerary" asp-route-id="@Model.Id" method="post" class="mb-4">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Itinerary</h5>
+                    <button class="btn btn-outline-light btn-sm" type="button" data-add-row="itinerary">Add day</button>
+                </div>
+                <div data-list="itinerary" data-index="@Model.ItineraryDays.Count">
+                    @for (var i = 0; i < Model.ItineraryDays.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Day</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].DayNumber" type="number" min="1" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Title</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Title" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" asp-for="ItineraryDays[i].DescriptionMarkdown" rows="2"></textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Meals</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Meals" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Accommodation</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].Accommodation" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Elevation</label>
+                                <input class="form-control" asp-for="ItineraryDays[i].ElevationMeters" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="itinerary">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Day</label>
+                            <input class="form-control" name="ItineraryDays[__index__].DayNumber" type="number" min="1" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Title" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="ItineraryDays[__index__].DescriptionMarkdown" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Meals</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Meals" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Accommodation</label>
+                            <input class="form-control" name="ItineraryDays[__index__].Accommodation" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Elevation</label>
+                            <input class="form-control" name="ItineraryDays[__index__].ElevationMeters" type="number" min="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save itinerary</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateFixedDepartures" asp-route-id="@Model.Id" method="post" class="mb-4">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Fixed departures</h5>
+                    <button class="btn btn-outline-light btn-sm" type="button" data-add-row="fixed">Add departure</button>
+                </div>
+                <div data-list="fixed" data-index="@Model.FixedDepartures.Count">
+                    @for (var i = 0; i < Model.FixedDepartures.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Start</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].StartDate" type="date" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">End</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].EndDate" type="date" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Price</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Price" type="number" min="0" step="0.01" />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Currency</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Currency" maxlength="3" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Slots total</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].SlotsTotal" type="number" min="0" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Slots available</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].SlotsAvailable" type="number" min="0" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" asp-for="FixedDepartures[i].Status">
+                                    @foreach (var status in fixedStatuses)
+                                    {
+                                        <option value="@status">@status</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Notes</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].Notes" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Variant id</label>
+                                <input class="form-control" asp-for="FixedDepartures[i].VariantId" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="fixed">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Start</label>
+                            <input class="form-control" name="FixedDepartures[__index__].StartDate" type="date" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">End</label>
+                            <input class="form-control" name="FixedDepartures[__index__].EndDate" type="date" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Price</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Price" type="number" min="0" step="0.01" />
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Currency</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Currency" maxlength="3" value="USD" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Slots total</label>
+                            <input class="form-control" name="FixedDepartures[__index__].SlotsTotal" type="number" min="0" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Slots available</label>
+                            <input class="form-control" name="FixedDepartures[__index__].SlotsAvailable" type="number" min="0" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="FixedDepartures[__index__].Status">
+                                @foreach (var status in fixedStatuses)
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Notes</label>
+                            <input class="form-control" name="FixedDepartures[__index__].Notes" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Variant id</label>
+                            <input class="form-control" name="FixedDepartures[__index__].VariantId" type="number" min="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save departures</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form asp-area="Admin" asp-controller="Trekking" asp-action="UpdateMedia" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <div class="card card-tt">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-semibold mb-0">Media assets</h5>
+                    <button class="btn btn-outline-light btn-sm" type="button" data-add-row="media">Add media</button>
+                </div>
+                <div data-list="media" data-index="@Model.Media.Count">
+                    @for (var i = 0; i < Model.Media.Count; i++)
+                    {
+                        <div class="row g-2 align-items-end mb-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Type</label>
+                                <select class="form-select" asp-for="Media[i].MediaType">
+                                    @foreach (var mediaType in mediaTypes)
+                                    {
+                                        <option value="@mediaType">@mediaType</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">URL</label>
+                                <input class="form-control" asp-for="Media[i].Url" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Thumbnail</label>
+                                <input class="form-control" asp-for="Media[i].ThumbnailUrl" />
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Title</label>
+                                <input class="form-control" asp-for="Media[i].Title" />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Sort</label>
+                                <input class="form-control" asp-for="Media[i].SortOrder" type="number" min="0" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <template data-template="media">
+                    <div class="row g-2 align-items-end mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" name="Media[__index__].MediaType">
+                                @foreach (var mediaType in mediaTypes)
+                                {
+                                    <option value="@mediaType">@mediaType</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">URL</label>
+                            <input class="form-control" name="Media[__index__].Url" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Thumbnail</label>
+                            <input class="form-control" name="Media[__index__].ThumbnailUrl" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Title</label>
+                            <input class="form-control" name="Media[__index__].Title" />
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label">Sort</label>
+                            <input class="form-control" name="Media[__index__].SortOrder" type="number" min="0" value="0" />
+                        </div>
+                    </div>
+                </template>
+                <div class="text-end">
+                    <button class="btn btn-primary" type="submit">Save media</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@

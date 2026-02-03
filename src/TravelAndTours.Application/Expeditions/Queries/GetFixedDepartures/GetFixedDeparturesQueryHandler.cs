@@ -20,7 +20,7 @@ public sealed class GetFixedDeparturesQueryHandler : IRequestHandler<GetFixedDep
         var slug = request.Slug.Trim();
 
         var departures = _uow.Expeditions.Query()
-            .Where(x => x.Status == ExpeditionStatus.Published && x.Slug == slug)
+            .Where(x => x.Status == ExpeditionStatus.Published && x.Type == request.Type && x.Slug == slug)
             .SelectMany(x => x.FixedDepartures)
             .OrderBy(fd => fd.StartDate)
             .Select(fd => new FixedDepartureDto(
@@ -38,7 +38,7 @@ public sealed class GetFixedDeparturesQueryHandler : IRequestHandler<GetFixedDep
 
         if (departures.Count == 0)
         {
-            var exists = _uow.Expeditions.Query().Any(x => x.Status == ExpeditionStatus.Published && x.Slug == slug);
+            var exists = _uow.Expeditions.Query().Any(x => x.Status == ExpeditionStatus.Published && x.Type == request.Type && x.Slug == slug);
             if (!exists)
             {
                 throw new NotFoundException("Expedition not found.");

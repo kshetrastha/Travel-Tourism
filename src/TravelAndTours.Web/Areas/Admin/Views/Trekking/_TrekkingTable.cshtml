@@ -1,0 +1,107 @@
+@model TravelAndTours.Web.Models.AdminExpeditionsIndexViewModel
+@{
+    var paged = Model.Expeditions;
+    var startItem = paged.TotalCount == 0 ? 0L : ((paged.Page - 1) * (long)paged.PageSize) + 1;
+    var endItem = paged.TotalCount == 0 ? 0L : Math.Min(paged.Page * (long)paged.PageSize, paged.TotalCount);
+    var summary = $"Showing {startItem}-{endItem} of {paged.TotalCount}";
+    var previousPage = Math.Max(1, paged.Page - 1);
+    var nextPage = paged.Page + 1;
+    var totalPages = Math.Max(1, paged.TotalPages);
+    var pageWindow = 2;
+    var startPage = Math.Max(1, paged.Page - pageWindow);
+    var endPage = Math.Min(totalPages, paged.Page + pageWindow);
+}
+
+<div data-trekking-summary="@summary"></div>
+
+@if (paged.Items.Count == 0)
+{
+    <div class="text-white-50">No trekking trips yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-dark align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width:80px">Id</th>
+                    <th>Title</th>
+                    <th style="width:160px">Category</th>
+                    <th style="width:140px">Status</th>
+                    <th style="width:160px">Created</th>
+                    <th style="width:120px"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in paged.Items)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>
+                        <div class="fw-semibold">@item.Title</div>
+                        <div class="text-white-50 small">@item.Slug</div>
+                    </td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Status</td>
+                    <td>@item.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    <td class="text-end">
+                        <a class="btn btn-outline-light btn-sm" asp-area="Admin" asp-controller="Trekking" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mt-3">
+        <div class="text-white-50 small">
+            Showing @startItem-@endItem of @paged.TotalCount
+        </div>
+        @if (paged.TotalPages > 1)
+        {
+            <nav aria-label="Trekking pagination">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
+                        <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="1" data-page="1" aria-label="First page">
+                            First
+                        </a>
+                    </li>
+                    <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
+                        <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@(paged.Page - 1)" data-page="@(paged.Page - 1)">
+                            Previous
+                        </a>
+                    </li>
+                    @if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="1" data-page="1">1</a>
+                        </li>
+                        <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@previousPage" data-page="@previousPage">&lt;</a>
+                        </li>
+                        @for (var pageNumber = startPage; pageNumber <= endPage; pageNumber++)
+                        {
+                            <li class="page-item @(pageNumber == paged.Page ? "active" : string.Empty)">
+                                <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@pageNumber" data-page="@pageNumber">
+                                    @pageNumber
+                                </a>
+                            </li>
+                        }
+                        <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@nextPage" data-page="@nextPage">&gt;</a>
+                        </li>
+                    }
+                    <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
+                        <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@(paged.Page + 1)" data-page="@(paged.Page + 1)">
+                            Next
+                        </a>
+                    </li>
+                    <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
+                        <a class="page-link" asp-area="Admin" asp-controller="Trekking" asp-action="Index" asp-route-page="@paged.TotalPages" data-page="@paged.TotalPages" aria-label="Last page">
+                            Last
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+}

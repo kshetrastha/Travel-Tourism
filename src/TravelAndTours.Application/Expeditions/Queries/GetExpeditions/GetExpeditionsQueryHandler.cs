@@ -22,7 +22,7 @@ public sealed class GetExpeditionsQueryHandler : IRequestHandler<GetExpeditionsQ
         var pageSize = Math.Clamp(request.PageSize, 1, 100);
 
         var query = _uow.Expeditions.Query()
-            .Where(x => x.Status == ExpeditionStatus.Published);
+            .Where(x => x.Status == ExpeditionStatus.Published && x.Type == request.Type);
 
         if (!string.IsNullOrWhiteSpace(request.CategorySlug))
         {

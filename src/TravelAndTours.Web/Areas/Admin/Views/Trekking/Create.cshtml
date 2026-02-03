@@ -1,0 +1,21 @@
+@model TravelAndTours.Web.Models.ExpeditionCreateViewModel
+@{
+    ViewData["Title"] = "Admin - Create Trekking";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Create Trekking</h2>
+            <div class="text-dark-50">Start with the core details, facts, and variants.</div>
+        </div>
+        <a class="btn btn-dark-success btn-outline-light" asp-area="Admin" asp-controller="Trekking" asp-action="Index">Back to list</a>
+    </div>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        @await Html.PartialAsync("~/Areas/Admin/Views/Expeditions/_ExpeditionBaseFields.cshtml", Model.Expedition, new ViewDataDictionary(ViewData) { ["Categories"] = Model.Categories })
+        <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-primary" type="submit">Create trekking</button>
+        </div>
+    </form>
+</div>

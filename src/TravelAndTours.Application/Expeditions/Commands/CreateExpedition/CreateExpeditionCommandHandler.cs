@@ -39,6 +39,7 @@ public sealed class CreateExpeditionCommandHandler : IRequestHandler<CreateExped
 
         var expedition = new Expedition
         {
+            Type = request.Type,
             CategoryId = model.CategoryId,
             Title = model.Title.Trim(),
             Slug = normalizedSlug,

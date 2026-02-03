@@ -23,6 +23,11 @@ public sealed class ReplaceItineraryCommandHandler : IRequestHandler<ReplaceItin
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         var existing = _uow.ItineraryDays.Query()
             .Where(x => x.ExpeditionId == expedition.Id)
             .ToList();

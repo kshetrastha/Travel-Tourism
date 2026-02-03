@@ -1,0 +1,119 @@
+@model TravelAndTours.Web.Models.ExpeditionsIndexViewModel
+@{
+    ViewData["Title"] = "Trekking";
+    var paged = Model.Expeditions;
+    var totalPages = Math.Max(1, paged.TotalPages);
+    var pageWindow = 2;
+    var startPage = Math.Max(1, paged.Page - pageWindow);
+    var endPage = Math.Min(totalPages, paged.Page + pageWindow);
+    var startItem = paged.TotalCount == 0 ? 0L : ((paged.Page - 1) * (long)paged.PageSize) + 1;
+    var endItem = paged.TotalCount == 0 ? 0L : Math.Min(paged.Page * (long)paged.PageSize, paged.TotalCount);
+}
+
+<div class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+        <div>
+            <h2 class="fw-semibold mb-1">Trekking</h2>
+            <div class="text-white-50">Browse our latest trekking adventures.</div>
+        </div>
+        <form class="d-flex align-items-center gap-2" method="get">
+            <label class="text-white-50 small" for="trekkingPageSize">Rows per page</label>
+            <input type="hidden" name="page" value="1" />
+            <select id="trekkingPageSize" name="pageSize" class="form-control form-control-sm w-auto" onchange="this.form.submit()">
+                <option value="6" selected="@(Model.PageSize == 6)">6</option>
+                <option value="9" selected="@(Model.PageSize == 9)">9</option>
+                <option value="12" selected="@(Model.PageSize == 12)">12</option>
+                <option value="24" selected="@(Model.PageSize == 24)">24</option>
+            </select>
+        </form>
+    </div>
+
+    @if (paged.Items.Count == 0)
+    {
+        <div class="alert alert-dark border-0">No trekking trips found.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var item in paged.Items)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-tt h-100">
+                        @if (!string.IsNullOrWhiteSpace(item.CoverImageUrl))
+                        {
+                            <img class="card-img-top" src="@item.CoverImageUrl" alt="@item.Title" />
+                        }
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold">@item.Title</div>
+                                    <div class="text-white-50 small">@item.Region, @item.Country</div>
+                                </div>
+                                @if (item.PriceFrom.HasValue)
+                                {
+                                    <span class="badge-soft">$@item.PriceFrom.Value</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(item.Tagline))
+                            {
+                                <div class="mt-2 text-white-50 small">@item.Tagline</div>
+                            }
+                            <div class="mt-3 text-white-50 small">
+                                <div>Duration: @item.DurationDays days</div>
+                                <div>Difficulty: @item.Difficulty</div>
+                                <div>Best season: @item.BestSeason</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mt-4">
+            <div class="text-white-50 small">Showing @startItem-@endItem of @paged.TotalCount</div>
+            @if (paged.TotalPages > 1)
+            {
+                <nav aria-label="Trekking pagination">
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize">First</a>
+                        </li>
+                        <li class="page-item @(paged.HasPreviousPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="@(paged.Page - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                        </li>
+                        @if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="1" asp-route-pageSize="@Model.PageSize">1</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        }
+                        @for (var pageNumber = startPage; pageNumber <= endPage; pageNumber++)
+                        {
+                            <li class="page-item @(pageNumber == paged.Page ? "active" : string.Empty)">
+                                <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="@pageNumber" asp-route-pageSize="@Model.PageSize">@pageNumber</a>
+                            </li>
+                        }
+                        @if (endPage < totalPages)
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="@totalPages" asp-route-pageSize="@Model.PageSize">@totalPages</a>
+                            </li>
+                        }
+                        <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="@(paged.Page + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                        </li>
+                        <li class="page-item @(paged.HasNextPage ? string.Empty : "disabled")">
+                            <a class="page-link" asp-controller="Trekking" asp-action="Index" asp-route-page="@paged.TotalPages" asp-route-pageSize="@Model.PageSize">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        </div>
+    }
+</div>

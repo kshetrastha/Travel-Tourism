@@ -17,7 +17,7 @@ public sealed class GetAdminExpeditionDetailQueryHandler : IRequestHandler<GetAd
     public Task<AdminExpeditionDetailDto> Handle(GetAdminExpeditionDetailQuery request, CancellationToken ct)
     {
         var detail = _uow.Expeditions.Query()
-            .Where(x => x.Id == request.Id)
+            .Where(x => x.Id == request.Id && x.Type == request.Type)
             .Select(x => new AdminExpeditionDetailDto(
                 x.Id,
                 x.CategoryId,

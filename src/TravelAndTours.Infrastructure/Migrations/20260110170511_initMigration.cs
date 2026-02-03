@@ -224,6 +224,7 @@ namespace TravelAndTours.Infrastructure.Migrations
                     OverviewMarkdown = table.Column<string>(type: "text", nullable: false),
                     IncludesMarkdown = table.Column<string>(type: "text", nullable: false),
                     ExcludesMarkdown = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false, defaultValue: "Expedition"),
                     Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false, defaultValue: "Draft"),
                     PublishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "timezone('utc', now())"),

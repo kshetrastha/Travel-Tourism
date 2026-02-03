@@ -34,6 +34,7 @@ public static class ExpeditionSeeder
 
             var expedition = new Expedition
             {
+                Type = ExpeditionType.Expedition,
                 Title = "Everest & Lhotse double 8000m Expedition 2026",
                 Slug = "everest-lhotse-double-8000ers",
                 ShortTitle = "Everest + Lhotse Double",

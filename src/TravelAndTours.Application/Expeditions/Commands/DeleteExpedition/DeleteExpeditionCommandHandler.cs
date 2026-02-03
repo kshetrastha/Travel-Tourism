@@ -22,6 +22,11 @@ public sealed class DeleteExpeditionCommandHandler : IRequestHandler<DeleteExped
             throw new NotFoundException("Expedition not found.");
         }
 
+        if (expedition.Type != request.Type)
+        {
+            throw new NotFoundException($"{request.Type} not found.");
+        }
+
         _uow.Expeditions.Remove(expedition);
         await _uow.SaveChangesAsync(ct);
 

@@ -5,6 +5,7 @@ namespace TravelAndTours.Domain.Entities;
 
 public sealed class Expedition : BaseEntity
 {
+    public ExpeditionType Type { get; set; } = ExpeditionType.Expedition;
     public int CategoryId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;

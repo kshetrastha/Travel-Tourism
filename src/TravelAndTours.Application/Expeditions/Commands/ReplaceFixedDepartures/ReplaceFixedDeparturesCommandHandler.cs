@@ -26,6 +26,11 @@ public sealed class ReplaceFixedDeparturesCommandHandler : IRequestHandler<Repla
                 throw new NotFoundException("Expedition not found.");
             }
 
+            if (expedition.Type != request.Type)
+            {
+                throw new NotFoundException($"{request.Type} not found.");
+            }
+
             var existing = _uow.FixedDepartures.Query()
                 .Where(x => x.ExpeditionId == expedition.Id)
                 .ToList();
