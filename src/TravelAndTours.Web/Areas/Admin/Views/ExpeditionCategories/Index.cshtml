@@ -4,11 +4,11 @@
     var parentLookup = Model.ToDictionary(x => x.Id, x => x.Name);
 }
 
-<div class="container py-5">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+<div class="container-fluid py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
         <div>
             <h2 class="fw-semibold mb-1">Manage Expedition Categories</h2>
-            <div class="text-white-50">Admin only</div>
+            <div class="text-muted">Keep your expedition catalog organized.</div>
         </div>
         <a class="btn btn-primary" asp-area="Admin" asp-controller="ExpeditionCategories" asp-action="Create">Add category</a>
     </div>
@@ -19,10 +19,10 @@
     }
 
     <div class="card card-tt">
-        <div class="card-body">
+        <div class="card-body p-4">
             @if (Model.Count == 0)
             {
-                <div class="text-white-50">No categories yet.</div>
+                <div class="text-muted">No categories yet.</div>
             }
             else
             {
